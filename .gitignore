@@ -1,0 +1,56 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+# ======================
+# Android / Gradle
+# ======================
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Generated files
+bin/
+gen/
+out/
+build/
+
+# Gradle
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+
+# Local configuration (DO NOT COMMIT)
+local.properties
+
+# Logs
+*.log
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# NDK
+.externalNativeBuild/
+.cxx/
+
+# Firebase / Google Services (secrets)
+google-services.json
