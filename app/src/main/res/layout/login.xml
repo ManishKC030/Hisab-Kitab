@@ -20,10 +20,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Log in"
+                android:text="Login"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="#4A6CF7"
+                android:textColor="#2652D9"
                 android:padding="8dp" />
 
             <TextView
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="Sign up"
                 android:textSize="18sp"
-                android:textColor="#B0B0B0"
+                android:textColor="#787878"
                 android:padding="8dp"
                 android:layout_marginStart="24dp" />
         </LinearLayout>
@@ -48,10 +48,10 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="contact@dscodetech.com"
+            android:hint="youremail@example.com"
             android:inputType="textEmailAddress"
             android:padding="12dp"
-            android:background="@android:drawable/edit_text"
+            android:background="@drawable/textbox_rounded"
             android:layout_marginTop="8dp" />
 
         <!-- Password label -->
@@ -69,62 +69,50 @@
             android:hint="********"
             android:inputType="textPassword"
             android:padding="12dp"
-            android:background="@android:drawable/edit_text"
+            android:background="@drawable/textbox_rounded"
             android:layout_marginTop="8dp" />
 
         <!-- Error + Forgot password -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Wrong password"
-                android:textColor="#FF0000"
-                android:textSize="12sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Forgot password?"
+                android:layout_marginTop="5sp"
+                android:layout_marginLeft="5sp"
                 android:textColor="#4A6CF7"
-                android:textSize="12sp"
-                android:layout_marginStart="16dp" />
-        </LinearLayout>
+                android:textSize="12sp"/>
 
         <!-- Continue button -->
+
+        <!-- OR divider -->
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="#1139DD"
             android:text="Continue"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#4A6CF7"
-            android:layout_marginTop="24dp" />
+            android:background="@drawable/button_effect"
+            android:textColor="#FFFFFF" />
 
-        <!-- OR divider -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Or"
+            android:text="---------------------------------------- or ----------------------------------------"
+            android:textStyle="italic"
             android:gravity="center"
             android:layout_marginTop="24dp"
-            android:textColor="#999999" />
+            android:textColor="#787878" />
 
-        <!-- Login with Apple -->
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Login with Apple"
-            android:layout_marginTop="16dp" />
+
 
         <!-- Login with Google -->
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Login with Google"
+            android:backgroundTint="#1139DD"
+            android:background="@drawable/button_effect"
             android:layout_marginTop="12dp" />
 
         <!-- Bottom sign up -->
@@ -138,6 +126,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="#787878"
                 android:text="Don't have an account? " />
 
             <TextView
