@@ -8,10 +8,15 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="HisabKitab"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
-        android:theme="@style/Theme.HisabKitab" />
+        android:theme="@style/Theme.HisabKitab">
 
-
-
+        <activity android:name=".MainActivity">
+                   <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>
