@@ -1,50 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical"
+    android:weightSum="4">
 
+    <!-- TOP IMAGE (1 PART) -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background" />
+
+    <!-- LOGIN SECTION (3 PARTS) -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="3"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:background="@drawable/curved_background"
+        android:padding="24dp"
+        android:layout_marginTop="-24dp">
 
-        <!-- Tabs: Login / Sign up -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- LOGIN TITLE -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:text="Login"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#2652D9"
+            android:padding="8dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Login"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#2652D9"
-                android:padding="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sign up"
-                android:textSize="18sp"
-                android:textColor="#787878"
-                android:padding="8dp"
-                android:layout_marginStart="24dp" />
-        </LinearLayout>
-
-        <!-- Email label -->
+        <!-- EMAIL LABEL -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Your Email"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:textColor="#000000" />
 
-        <!-- Email input -->
+        <!-- EMAIL INPUT -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +52,7 @@
             android:background="@drawable/textbox_rounded"
             android:layout_marginTop="8dp" />
 
-        <!-- Password label -->
+        <!-- PASSWORD LABEL -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,7 +60,7 @@
             android:layout_marginTop="16dp"
             android:textColor="#000000" />
 
-        <!-- Password input -->
+        <!-- PASSWORD INPUT -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -72,50 +70,43 @@
             android:background="@drawable/textbox_rounded"
             android:layout_marginTop="8dp" />
 
-        <!-- Error + Forgot password -->
+        <!-- FORGOT PASSWORD -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Forgot password?"
+            android:layout_marginTop="8dp"
+            android:textColor="#4A6CF7"
+            android:textSize="12sp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Forgot password?"
-                android:layout_marginTop="5sp"
-                android:layout_marginLeft="5sp"
-                android:textColor="#4A6CF7"
-                android:textSize="12sp"/>
-
-        <!-- Continue button -->
-
-        <!-- OR divider -->
+        <!-- CONTINUE BUTTON -->
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:backgroundTint="#1139DD"
             android:text="Continue"
-            android:background="@drawable/button_effect"
-            android:textColor="#FFFFFF" />
+            android:layout_marginTop="24dp"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/button_effect" />
 
+        <!-- OR DIVIDER -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="---------------------------------------- or ----------------------------------------"
-            android:textStyle="italic"
+            android:text="──────────── or ────────────"
             android:gravity="center"
-            android:layout_marginTop="24dp"
-            android:textColor="#787878" />
+            android:textColor="#787878"
+            android:layout_marginTop="24dp" />
 
-
-
-        <!-- Login with Google -->
+        <!-- GOOGLE LOGIN -->
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Login with Google"
-            android:backgroundTint="#1139DD"
+            android:layout_marginTop="12dp"
             android:background="@drawable/button_effect"
-            android:layout_marginTop="12dp" />
+            android:textColor="#FFFFFF" />
 
-        <!-- Bottom sign up -->
+        <!-- SIGN UP TEXT -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -126,8 +117,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#787878"
-                android:text="Don't have an account? " />
+                android:text="Don't have an account? "
+                android:textColor="#787878" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -138,4 +129,4 @@
 
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>
