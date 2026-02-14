@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bluepattern"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="27dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/curved_screen"
+        android:backgroundTint="#fffcf5"
+
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center"
+        android:elevation="6dp">
+
+        <!-- TITLE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to HisabKitab"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginTop="8dp" />
+
+        <!-- SUBTITLE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Track your expenses easily and securely"
+            android:textStyle="italic"
+            android:textColor="#666666"
+            android:layout_marginTop="4dp"
+            android:textSize="14sp" />
+
+        <!-- IMAGE IN BETWEEN -->
+        <ImageView
+            android:id="@+id/imgWelcome"
+            android:layout_width="220dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/welcome_img" />
+
+        <!-- LOGIN BUTTON -->
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log In"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/textbox_design"
+            android:textColor="@color/white" />
+
+        <!-- SIGN UP BUTTON -->
+        <Button
+            android:id="@+id/btnSignUp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sign Up"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/button_color"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+</LinearLayout>
