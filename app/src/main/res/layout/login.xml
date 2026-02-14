@@ -2,81 +2,77 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#A7D0E1"
+    android:gravity="center"
     android:orientation="vertical"
     android:weightSum="4">
 
     <!-- TOP IMAGE (1 PART) -->
-
-    <!-- LOGIN SECTION (3 PARTS) -->
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scaleType="centerCrop"
-        android:src="@drawable/bluepattern" />
-
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="365dp"
         android:layout_height="0dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="-24dp"
+        android:layout_marginRight="40dp"
         android:layout_weight="3"
-        android:orientation="vertical"
         android:background="@drawable/curved_screen"
-        android:padding="24dp"
-        android:layout_marginTop="-24dp">
+        android:backgroundTint="#fffcf5"
+        android:orientation="vertical"
+        android:padding="24dp">
 
         <!-- LOGIN TITLE -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Login"
             android:layout_gravity="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:padding="8dp"
+            android:text="Login"
             android:textColor="#2652D9"
-            android:padding="8dp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <!-- EMAIL LABEL -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your Email"
             android:layout_marginTop="24dp"
+            android:text="Your Email"
             android:textColor="#000000" />
 
         <!-- EMAIL INPUT -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/textbox_design"
             android:hint="youremail@example.com"
             android:inputType="textEmailAddress"
-            android:padding="12dp"
-            android:background="@drawable/textbox_design"
-            android:layout_marginTop="8dp" />
+            android:padding="12dp" />
 
         <!-- PASSWORD LABEL -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Password"
             android:layout_marginTop="16dp"
+            android:text="Password"
             android:textColor="#000000" />
 
         <!-- PASSWORD INPUT -->
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/textbox_design"
             android:hint="********"
             android:inputType="textPassword"
-            android:padding="12dp"
-            android:background="@drawable/textbox_design"
-            android:layout_marginTop="8dp" />
+            android:padding="12dp" />
 
         <!-- FORGOT PASSWORD -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Forgot password?"
             android:layout_marginTop="8dp"
+            android:text="Forgot password?"
             android:textColor="#4A6CF7"
             android:textSize="12sp" />
 
@@ -94,28 +90,28 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="───────── or ─────────"
-            android:textStyle="italic"
+            android:layout_marginTop="24dp"
             android:gravity="center"
+            android:text="───────── or ─────────"
             android:textColor="#787878"
-            android:layout_marginTop="24dp" />
+            android:textStyle="italic" />
 
         <!-- GOOGLE LOGIN -->
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Login with Google"
             android:layout_marginTop="12dp"
             android:background="@drawable/button_color"
+            android:text="Login with Google"
             android:textColor="#FFFFFF" />
 
         <!-- SIGN UP TEXT -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:layout_marginTop="24dp">
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -124,12 +120,12 @@
                 android:textColor="#787878" />
 
             <TextView
-                android:id="@+id/signup"
+                android:id="@+id/txtsignup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
                 android:text="Sign up"
-                android:textColor="#4A6CF7" />
+                android:textColor="#4A6CF7"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>
