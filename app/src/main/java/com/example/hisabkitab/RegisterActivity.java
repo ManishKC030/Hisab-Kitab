@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class RegisterActivity extends  Activity{
-    TextView txtLogin;
+    TextView txtGoToLogin;
     EditText edtName, edtEmail, edtPassword;
     Button btnCreateAccount;
 
@@ -32,7 +32,7 @@ public class RegisterActivity extends  Activity{
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnCreateAccount = findViewById(R.id.btnCreateAccount);
-        txtLogin = findViewById(R.id.txtlogin);
+        txtGoToLogin = findViewById(R.id.txtGoToLogin);
 
         // Create Account Button
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +92,7 @@ public class RegisterActivity extends  Activity{
             }
         });
 
-        txtLogin.setOnClickListener(new View.OnClickListener() {
+        txtGoToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);

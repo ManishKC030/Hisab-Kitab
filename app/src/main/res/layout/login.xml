@@ -101,7 +101,7 @@
 
         <!-- GOOGLE LOGIN -->
         <Button
-            android:id="@+id/btn"
+            android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -124,7 +124,7 @@
                 android:textColor="#787878" />
 
             <TextView
-                android:id="@+id/txtsignup"
+                android:id="@+id/txtGoToRegister"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign up"
