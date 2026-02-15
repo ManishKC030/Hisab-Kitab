@@ -50,7 +50,7 @@
 
         <!-- LOGIN BUTTON -->
         <Button
-            android:id="@+id/btnLogin"
+            android:id="@+id/btnGoToLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Log In"
@@ -60,7 +60,7 @@
 
         <!-- SIGN UP BUTTON -->
         <Button
-            android:id="@+id/btnSignUp"
+            android:id="@+id/btnGoToRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Sign Up"

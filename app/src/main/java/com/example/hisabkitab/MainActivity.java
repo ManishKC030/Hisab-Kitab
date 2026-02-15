@@ -6,18 +6,18 @@ import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends Activity {
-    Button btnSignUp, btnLogin;
+    Button btnGoToRegister, btnGoToLogin;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.welcome);
 
-        btnLogin = findViewById(R.id.btnLogin);
-        btnSignUp = findViewById(R.id.btnSignUp);
+        btnGoToLogin = findViewById(R.id.btnGoToLogin);
+        btnGoToRegister = findViewById(R.id.btnGoToRegister);
 
         //direct to login
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        btnGoToLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
         });
 
         //direct to signup
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
+        btnGoToRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, RegisterActivity.class);

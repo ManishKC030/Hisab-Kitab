@@ -41,6 +41,7 @@
 
         <!-- EMAIL INPUT -->
         <EditText
+            android:id="@+id/edtEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -59,6 +60,7 @@
 
         <!-- PASSWORD INPUT -->
         <EditText
+            android:id="@+id/edtPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -69,6 +71,7 @@
 
         <!-- FORGOT PASSWORD -->
         <TextView
+            android:id="@+id/txtForgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -80,6 +83,7 @@
 
         <!-- OR DIVIDER -->
         <Button
+            android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -98,6 +102,7 @@
 
         <!-- GOOGLE LOGIN -->
         <Button
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -120,7 +125,7 @@
                 android:textColor="#787878" />
 
             <TextView
-                android:id="@+id/txtsignup"
+                android:id="@+id/txtGoToRegister"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign up"
