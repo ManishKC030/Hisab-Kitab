@@ -140,7 +140,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="50dp"
-                android:text="Transfer"
+                android:text="Add Income"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/button_income"/>
 
@@ -152,7 +152,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="50dp"
-                android:text="Request"
+                android:text="Add Expense"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/button_expense"/>
         </LinearLayout>
