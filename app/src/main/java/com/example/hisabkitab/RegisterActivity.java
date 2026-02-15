@@ -73,7 +73,7 @@ public class RegisterActivity extends  Activity{
                                                     Toast.LENGTH_SHORT).show();
 
                                             // Go to Login Page
-                                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                            Intent intent = new Intent(RegisterActivity.this, DashboardActvity.class);
                                             startActivity(intent);
                                             finish();
                                         })

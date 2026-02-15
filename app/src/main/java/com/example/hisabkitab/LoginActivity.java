@@ -23,7 +23,7 @@ public class LoginActivity extends Activity {
 
         //if user is logged in already then no need to need to login
         if(auth.getCurrentUser() != null){
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, DashboardActvity.class);
             startActivity(intent);
             finish();
         }
@@ -57,7 +57,7 @@ public class LoginActivity extends Activity {
                                     Toast.LENGTH_SHORT).show();
 
                             // Go to MainActivity
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, DashboardActvity.class);
                             startActivity(intent);
                             finish();
 
