@@ -21,6 +21,14 @@ public class LoginActivity extends Activity {
         // Initialize Firebase
         auth = FirebaseAuth.getInstance();
 
+        //if user is logged in already then no need to need to login
+        if(auth.getCurrentUser() != null){
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
