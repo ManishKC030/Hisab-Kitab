@@ -25,6 +25,3 @@
         <activity android:name=".AccountActivity"/>
     </application>
 </manifest>  
-
-
-going to add Sqlite database permissions and activities for the app.
