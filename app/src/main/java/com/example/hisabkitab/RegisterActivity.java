@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegisterActivity extends Activity {
-
     TextView txtGoToLogin;
     EditText edtName, edtEmail, edtPassword;
     Button btnCreateAccount;
