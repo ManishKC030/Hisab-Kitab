@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.content.Intent;
 import android.widget.*;
 import android.text.TextUtils;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.content.Context;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,7 +53,23 @@ public class RegisterActivity extends Activity {
         });
     }
 
+    // 🔹 Check internet connectivity
+    private boolean isNetworkAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            return activeNetwork != null && activeNetwork.isConnected();
+        }
+        return false;
+    }
+
+    // 🔹 Register user
     private void registerUser() {
+
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No internet connection! Please connect to Wi-Fi or mobile data.", Toast.LENGTH_LONG).show();
+            return; // stop registration
+        }
 
         String name = edtName.getText().toString().trim();
         String email = edtEmail.getText().toString().trim();
