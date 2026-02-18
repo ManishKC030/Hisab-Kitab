@@ -1,15 +1,20 @@
 package com.example.hisabkitab;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.content.Intent;
-import android.view.View;
 import android.widget.*;
+import android.text.TextUtils;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginActivity extends Activity {
-    TextView txtGoToRegister, txtForgotPassword;;
+
+    TextView txtGoToRegister, txtForgotPassword;
     EditText edtEmail, edtPassword;
     Button btnLogin;
+
     FirebaseAuth auth;
 
     @Override
@@ -17,91 +22,109 @@ public class LoginActivity extends Activity {
         super.onCreate(b);
         setContentView(R.layout.login);
 
-
-        // Initialize Firebase
         auth = FirebaseAuth.getInstance();
 
-        //if user is logged in already then no need to need to login
-        if(auth.getCurrentUser() != null){
-            Intent intent = new Intent(LoginActivity.this, DashboardActvity.class);
-            startActivity(intent);
+        // 🔹 Auto Login if already logged in AND email verified
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser != null && currentUser.isEmailVerified()) {
+            startActivity(new Intent(LoginActivity.this, DashboardActvity.class));
             finish();
         }
 
-
+        // Initialize views
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
         txtGoToRegister = findViewById(R.id.txtGoToRegister);
         txtForgotPassword = findViewById(R.id.txtForgotPassword);
 
-        // LOGIN BUTTON
-        btnLogin.setOnClickListener(v -> {
+        // 🔹 LOGIN BUTTON
+        btnLogin.setOnClickListener(v -> loginUser());
 
-            String email = edtEmail.getText().toString().trim();
-            String password = edtPassword.getText().toString().trim();
+        // 🔹 Go To Register
+        txtGoToRegister.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+            finish();
+        });
 
-            if(email.isEmpty() || password.isEmpty()){
-                Toast.makeText(LoginActivity.this,
-                        "All fields required", Toast.LENGTH_SHORT).show();
-                return;
-            }
+        // 🔹 Forgot Password
+        txtForgotPassword.setOnClickListener(v -> resetPassword());
+    }
 
-            auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
+    private void loginUser() {
 
-                        if(task.isSuccessful()) {
+        String email = edtEmail.getText().toString().trim();
+        String password = edtPassword.getText().toString().trim();
 
-                            Toast.makeText(LoginActivity.this,
-                                    "Login Successful!",
-                                    Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-                            // Go to MainActivity
-                            Intent intent = new Intent(LoginActivity.this, DashboardActvity.class);
-                            startActivity(intent);
-                            finish();
+        btnLogin.setEnabled(false);
 
-                        } else {
-                            Toast.makeText(LoginActivity.this,
-                                    "Login Failed: " + task.getException().getMessage(),
-                                    Toast.LENGTH_LONG).show();
+        auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+
+                    btnLogin.setEnabled(true);
+
+                    if (task.isSuccessful()) {
+
+                        FirebaseUser user = auth.getCurrentUser();
+
+                        if (user != null) {
+
+                            if (user.isEmailVerified()) {
+
+                                Toast.makeText(this,
+                                        "Login Successful!",
+                                        Toast.LENGTH_SHORT).show();
+
+                                startActivity(new Intent(LoginActivity.this,
+                                        DashboardActvity.class));
+                                finish();
+
+                            } else {
+
+                                user.sendEmailVerification();
+
+                                Toast.makeText(this,
+                                        "Email not verified. Verification email sent again.",
+                                        Toast.LENGTH_LONG).show();
+
+                                auth.signOut();
+                            }
                         }
-                    });
 
-        });
+                    } else {
 
-        txtGoToRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-                finish(); //closes login page
+                        Toast.makeText(this,
+                                "Login Failed: " +
+                                        task.getException().getMessage(),
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
 
-            }
-        });
+    private void resetPassword() {
 
-        // FORGOT PASSWORD
-        txtForgotPassword.setOnClickListener(v -> {
+        String email = edtEmail.getText().toString().trim();
 
-            String email = edtEmail.getText().toString().trim();
+        if (TextUtils.isEmpty(email)) {
+            Toast.makeText(this,
+                    "Enter your registered email first",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-            if(email.isEmpty()){
-                Toast.makeText(LoginActivity.this,
-                        "Enter your email first", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            auth.sendPasswordResetEmail(email)
-                    .addOnSuccessListener(unused -> {
-                        Toast.makeText(LoginActivity.this,
+        auth.sendPasswordResetEmail(email)
+                .addOnSuccessListener(unused ->
+                        Toast.makeText(this,
                                 "Password reset email sent!",
-                                Toast.LENGTH_LONG).show();
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(LoginActivity.this,
+                                Toast.LENGTH_LONG).show())
+                .addOnFailureListener(e ->
+                        Toast.makeText(this,
                                 "Error: " + e.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    });
-        });
+                                Toast.LENGTH_LONG).show());
     }
 }
