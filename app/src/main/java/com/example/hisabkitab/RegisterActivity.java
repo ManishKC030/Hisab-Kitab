@@ -21,23 +21,21 @@ public class RegisterActivity extends Activity {
 
     FirebaseAuth auth;
     FirebaseFirestore db;
-
-    DatabaseHandler dbHandler;
+    DatabaseHandler dbHandler; // SQLite handler
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.register);
 
-        //firebase
+        // Firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-
-        //SQLite
+        // SQLite
         dbHandler = new DatabaseHandler(this);
 
-        //veiws
+        // Views
         edtName = findViewById(R.id.edtName);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
@@ -67,9 +65,11 @@ public class RegisterActivity extends Activity {
 
         btnCreateAccount.setEnabled(false);
 
-        //Create User in FirebaSE Auth
+        // 🔹 Create user in Firebase Auth
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
+
+                    btnCreateAccount.setEnabled(true);
 
                     if (task.isSuccessful()) {
 
@@ -77,13 +77,13 @@ public class RegisterActivity extends Activity {
 
                         if (user != null) {
 
-                            // 🔹 Send Email Verification
+                            // 🔹 Send verification email
                             user.sendEmailVerification()
                                     .addOnSuccessListener(unused -> {
 
                                         String userId = user.getUid();
 
-                                        // Store user data in Firestore
+                                        // 🔹 Store user in Firestore
                                         Map<String, Object> userMap = new HashMap<>();
                                         userMap.put("name", name);
                                         userMap.put("email", email);
@@ -92,11 +92,14 @@ public class RegisterActivity extends Activity {
                                                 .document(userId)
                                                 .set(userMap);
 
+                                        // 🔹 Store user in SQLite for offline login
+                                        dbHandler.insertUser(userId, email, password);
+
                                         Toast.makeText(this,
-                                                "Account created! Please verify your email before login.",
+                                                "Account created! Verify your email before login.",
                                                 Toast.LENGTH_LONG).show();
 
-                                        // 🔹 Sign out user after registration
+                                        // 🔹 Sign out user
                                         auth.signOut();
 
                                         // 🔹 Go to Login page
@@ -109,10 +112,10 @@ public class RegisterActivity extends Activity {
                                                 "Verification email failed: " + e.getMessage(),
                                                 Toast.LENGTH_LONG).show();
                                     });
+
                         }
 
                     } else {
-                        btnCreateAccount.setEnabled(true);
                         Toast.makeText(this,
                                 "Registration Failed: " +
                                         task.getException().getMessage(),
