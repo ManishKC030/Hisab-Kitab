@@ -27,9 +27,12 @@ public class RegisterActivity extends Activity {
         super.onCreate(b);
         setContentView(R.layout.register);
 
+        //firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
+
+        //SQLite
         edtName = findViewById(R.id.edtName);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
