@@ -15,5 +15,5 @@ An Android Expense Tracker App built using Java.
 - SQLite(If Used)
 
 ## Author
-Manish KC
+Manish KC  
 Manoj Poudel
