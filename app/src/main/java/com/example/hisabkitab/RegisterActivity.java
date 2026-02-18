@@ -22,6 +22,8 @@ public class RegisterActivity extends Activity {
     FirebaseAuth auth;
     FirebaseFirestore db;
 
+    DatabaseHandler dbHandler;
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
@@ -33,6 +35,9 @@ public class RegisterActivity extends Activity {
 
 
         //SQLite
+        dbHandler = new DatabaseHandler(this);
+
+        //veiws
         edtName = findViewById(R.id.edtName);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
@@ -62,6 +67,7 @@ public class RegisterActivity extends Activity {
 
         btnCreateAccount.setEnabled(false);
 
+        //Create User in FirebaSE Auth
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
 
