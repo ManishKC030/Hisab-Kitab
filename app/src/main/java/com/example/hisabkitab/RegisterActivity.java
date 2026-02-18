@@ -65,7 +65,7 @@ public class RegisterActivity extends Activity {
 
         btnCreateAccount.setEnabled(false);
 
-        // 🔹 Create user in Firebase Auth
+        // 🔹 Firebase registration
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
 
@@ -77,7 +77,7 @@ public class RegisterActivity extends Activity {
 
                         if (user != null) {
 
-                            // 🔹 Send verification email
+                            // 🔹 Send email verification
                             user.sendEmailVerification()
                                     .addOnSuccessListener(unused -> {
 
@@ -93,13 +93,13 @@ public class RegisterActivity extends Activity {
                                                 .set(userMap);
 
                                         // 🔹 Store user in SQLite for offline login
-                                        dbHandler.insertUser(userId, email, password);
+                                        dbHandler.insertUser(userId, email, password, name);
 
                                         Toast.makeText(this,
-                                                "Account created! Verify your email before login.",
+                                                "Account created! Please verify your email before login.",
                                                 Toast.LENGTH_LONG).show();
 
-                                        // 🔹 Sign out user
+                                        // 🔹 Sign out user to force email verification
                                         auth.signOut();
 
                                         // 🔹 Go to Login page

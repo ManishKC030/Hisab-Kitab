@@ -9,7 +9,7 @@ import android.database.Cursor;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "hisabkitab.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2; // incremented to add "name"
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -18,12 +18,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        // USERS TABLE
+        // USERS TABLE with "name"
         db.execSQL("CREATE TABLE users (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "firebase_uid TEXT," +
                 "email TEXT," +
-                "password TEXT)");
+                "password TEXT," +
+                "name TEXT)");
 
         // EXPENSE TABLE
         db.execSQL("CREATE TABLE expenses (" +
@@ -38,20 +39,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Currently drops tables — safe for development only
-        db.execSQL("DROP TABLE IF EXISTS users");
-        db.execSQL("DROP TABLE IF EXISTS expenses");
-        onCreate(db);
+        // Safe upgrade: add "name" column if not exists
+        if (oldVersion < 2) {
+            try {
+                db.execSQL("ALTER TABLE users ADD COLUMN name TEXT");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // 🔹 Insert user into SQLite
-    public long insertUser(String firebaseUid, String email, String password) {
+    public long insertUser(String firebaseUid, String email, String password, String name) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put("firebase_uid", firebaseUid);
         values.put("email", email);
         values.put("password", password);
+        values.put("name", name);
 
         return db.insert("users", null, values);
     }
@@ -68,6 +74,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         boolean exists = cursor.getCount() > 0;
         cursor.close();
         return exists;
+    }
+
+    // 🔹 Get username for a given email+password (offline login greeting)
+    public String getUsername(String email, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT name FROM users WHERE email=? AND password=?",
+                new String[]{email, password}
+        );
+
+        String name = null;
+        if (cursor.moveToFirst()) {
+            name = cursor.getString(cursor.getColumnIndex("name"));
+        }
+        cursor.close();
+        return name;
     }
 
     // 🔹 Insert expense
@@ -93,5 +116,4 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[]{userUid}
         );
     }
-
 }
