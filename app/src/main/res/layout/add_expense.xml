@@ -1,96 +1,192 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F6FA"
-    android:padding="16dp">
+    android:background="#F5F6FA">
 
+    <!-- Top Blue Header -->
     <LinearLayout
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="160dp"
+        android:background="@drawable/bg_header"
+        android:padding="20dp"
         android:orientation="vertical">
 
-        <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add Expense"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#1E1E1E" />
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"/>
 
-        <!-- Amount -->
         <EditText
             android:id="@+id/edtAmount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter Amount"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#DADADA"
+            android:textSize="28sp"
             android:inputType="numberDecimal"
-            android:layout_marginTop="20dp"
-            android:background="@android:drawable/edit_text"
-            android:padding="12dp" />
-
-        <!-- Title -->
-        <EditText
-            android:id="@+id/edtTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Title (e.g. Lunch, Bus Fare)"
-            android:layout_marginTop="12dp"
-            android:padding="12dp" />
-
-        <!-- Date -->
-        <EditText
-            android:id="@+id/edtDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Select Date"
-            android:focusable="false"
-            android:clickable="true"
-            android:layout_marginTop="12dp"
-            android:padding="12dp" />
-
-        <!-- Category -->
-        <Spinner
-            android:id="@+id/spCategory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
-
-        <!-- Payment Method -->
-        <Spinner
-            android:id="@+id/spPayment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp" />
-
-        <!-- Repeat Monthly -->
-        <CheckBox
-            android:id="@+id/chkRepeat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Repeat Every Month"
-            android:layout_marginTop="12dp" />
-
-        <!-- Description -->
-        <EditText
-            android:id="@+id/edtDescription"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:hint="Description (Optional)"
-            android:gravity="top"
-            android:layout_marginTop="12dp"
-            android:padding="12dp" />
-
-        <!-- Add Button -->
-        <Button
-            android:id="@+id/btnAddExpense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add Expense"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="#3F51B5"
-            android:textColor="#FFFFFF" />
+            android:background="@android:color/transparent"
+            android:layout_marginTop="20dp"/>
 
     </LinearLayout>
-</ScrollView>
+
+    <!-- White Card Container -->
+    <ScrollView
+        android:layout_below="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-40dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card"
+            android:padding="20dp">
+
+            <!-- Date -->
+            <EditText
+                android:id="@+id/edtDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select Date"
+                android:focusable="false"
+                android:clickable="true"
+                android:padding="12dp"/>
+
+            <!-- Title -->
+            <EditText
+                android:id="@+id/edtTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title"
+                android:layout_marginTop="12dp"
+                android:padding="12dp"/>
+
+            <!-- Select Category -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Category"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
+
+            <!-- Category Grid -->
+            <GridLayout
+                android:id="@+id/gridCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:layout_marginTop="12dp">
+
+                <!-- Category Item -->
+                <TextView
+                    android:id="@+id/catFood"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="Food"
+                    android:background="@drawable/bg_category_unselected"
+                    android:layout_margin="6dp"/>
+
+                <TextView
+                    android:id="@+id/catTransport"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="Transport"
+                    android:background="@drawable/bg_category_unselected"
+                    android:layout_margin="6dp"/>
+
+                <TextView
+                    android:id="@+id/catShopping"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="Shopping"
+                    android:background="@drawable/bg_category_unselected"
+                    android:layout_margin="6dp"/>
+
+                <TextView
+                    android:id="@+id/catBills"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="Bills"
+                    android:background="@drawable/bg_category_unselected"
+                    android:layout_margin="6dp"/>
+
+                <TextView
+                    android:id="@+id/catHealth"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="Health"
+                    android:background="@drawable/bg_category_unselected"
+                    android:layout_margin="6dp"/>
+
+                <TextView
+                    android:id="@+id/catOther"
+                    android:layout_width="0dp"
+                    android:layout_height="60dp"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:text="Other"
+                    android:background="@drawable/bg_category_unselected"
+                    android:layout_margin="6dp"/>
+            </GridLayout>
+
+            <!-- Repeat Toggle -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal"
+                android:gravity="spaceBetween">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Repeat Every Month"/>
+
+                <Switch
+                    android:id="@+id/switchRepeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!-- Description -->
+            <EditText
+                android:id="@+id/edtDescription"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:hint="More Details..."
+                android:gravity="top"
+                android:layout_marginTop="16dp"
+                android:padding="12dp"/>
+
+            <!-- Add Button -->
+            <Button
+                android:id="@+id/btnAddExpense"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Add"
+                android:textColor="#FFFFFF"
+                android:layout_marginTop="20dp"
+                android:backgroundTint="#3F51B5"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>
