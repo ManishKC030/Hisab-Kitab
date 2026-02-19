@@ -1,6 +1,6 @@
 package com.example.hisabkitab;
 
-public class AddExpenseActivity {
+public class AddExpenseActivity  {
     TextView catOther = findViewById(R.id.catOther);
     EditText edtNewCategory = findViewById(R.id.edtNewCategory);
 
