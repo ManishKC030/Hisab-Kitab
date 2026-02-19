@@ -2,191 +2,185 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F6FA">
+    android:background="#3F51B5">
 
-    <!-- Top Blue Header -->
+    <!-- Header -->
+    <TextView
+        android:id="@+id/txtHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Expense"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_margin="20dp"/>
+
+    <!-- White Card -->
     <LinearLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:background="@drawable/bg_header"
-        android:padding="20dp"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add Expense"
-            android:textSize="20sp"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"/>
-
-        <EditText
-            android:id="@+id/edtAmount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Enter Amount"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#DADADA"
-            android:textSize="28sp"
-            android:inputType="numberDecimal"
-            android:background="@android:color/transparent"
-            android:layout_marginTop="20dp"/>
-
-    </LinearLayout>
-
-    <!-- White Card Container -->
-    <ScrollView
-        android:layout_below="@id/header"
+        android:layout_below="@id/txtHeader"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="-40dp">
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="@drawable/bg_card"
-            android:padding="20dp">
+            android:layout_height="match_parent">
 
-            <!-- Date -->
-            <EditText
-                android:id="@+id/edtDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Select Date"
-                android:focusable="false"
-                android:clickable="true"
-                android:padding="12dp"/>
-
-            <!-- Title -->
-            <EditText
-                android:id="@+id/edtTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Title"
-                android:layout_marginTop="12dp"
-                android:padding="12dp"/>
-
-            <!-- Select Category -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Category"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"/>
-
-            <!-- Category Grid -->
-            <GridLayout
-                android:id="@+id/gridCategory"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="3"
-                android:layout_marginTop="12dp">
-
-                <!-- Category Item -->
-                <TextView
-                    android:id="@+id/catFood"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:text="Food"
-                    android:background="@drawable/bg_category_unselected"
-                    android:layout_margin="6dp"/>
-
-                <TextView
-                    android:id="@+id/catTransport"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:text="Transport"
-                    android:background="@drawable/bg_category_unselected"
-                    android:layout_margin="6dp"/>
-
-                <TextView
-                    android:id="@+id/catShopping"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:text="Shopping"
-                    android:background="@drawable/bg_category_unselected"
-                    android:layout_margin="6dp"/>
-
-                <TextView
-                    android:id="@+id/catBills"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:text="Bills"
-                    android:background="@drawable/bg_category_unselected"
-                    android:layout_margin="6dp"/>
-
-                <TextView
-                    android:id="@+id/catHealth"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:text="Health"
-                    android:background="@drawable/bg_category_unselected"
-                    android:layout_margin="6dp"/>
-
-                <TextView
-                    android:id="@+id/catOther"
-                    android:layout_width="0dp"
-                    android:layout_height="60dp"
-                    android:layout_columnWeight="1"
-                    android:gravity="center"
-                    android:text="Other"
-                    android:background="@drawable/bg_category_unselected"
-                    android:layout_margin="6dp"/>
-            </GridLayout>
-
-            <!-- Repeat Toggle -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
-                android:gravity="spaceBetween">
+                android:orientation="vertical"
+                android:padding="20dp">
 
+                <!-- Amount -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Repeat Every Month"/>
+                    android:text="Amount"
+                    android:textStyle="bold"/>
 
-                <Switch
-                    android:id="@+id/switchRepeat"
+                <EditText
+                    android:id="@+id/edtAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Amount"
+                    android:textSize="24sp"
+                    android:inputType="numberDecimal"
+                    android:padding="12dp"/>
+
+                <!-- Date -->
+                <EditText
+                    android:id="@+id/edtDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Select Date"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:layout_marginTop="12dp"
+                    android:padding="12dp"/>
+
+                <!-- Title -->
+                <EditText
+                    android:id="@+id/edtTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Title"
+                    android:layout_marginTop="12dp"
+                    android:padding="12dp"/>
+
+                <!-- Category -->
+                <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:text="Select Category"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"/>
+
+                <GridLayout
+                    android:id="@+id/gridCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="3"
+                    android:layout_marginTop="12dp">
+
+                    <TextView
+                        android:id="@+id/catFood"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Food"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                    <TextView
+                        android:id="@+id/catTransport"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Transport"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                    <TextView
+                        android:id="@+id/catShopping"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Shopping"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                    <TextView
+                        android:id="@+id/catBills"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Bills"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                    <TextView
+                        android:id="@+id/catHealth"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Health"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                    <TextView
+                        android:id="@+id/catOther"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Other"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                </GridLayout>
+
+                <!-- Add New Category Input (Hidden Initially) -->
+                <EditText
+                    android:id="@+id/edtNewCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter New Category"
+                    android:visibility="gone"
+                    android:layout_marginTop="12dp"
+                    android:padding="12dp"/>
+
+                <!-- Description -->
+                <EditText
+                    android:id="@+id/edtDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:hint="Description....."
+                    android:gravity="top"
+                    android:layout_marginTop="16dp"
+                    android:padding="12dp"/>
+
+                <!-- Add Button -->
+                <Button
+                    android:id="@+id/btnAddExpense"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Add Expense"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="#3F51B5"/>
+
             </LinearLayout>
 
-            <!-- Description -->
-            <EditText
-                android:id="@+id/edtDescription"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:hint="More Details..."
-                android:gravity="top"
-                android:layout_marginTop="16dp"
-                android:padding="12dp"/>
+        </ScrollView>
 
-            <!-- Add Button -->
-            <Button
-                android:id="@+id/btnAddExpense"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Add"
-                android:textColor="#FFFFFF"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="#3F51B5"/>
-
-        </LinearLayout>
-
-    </ScrollView>
+    </LinearLayout>
 
 </RelativeLayout>
