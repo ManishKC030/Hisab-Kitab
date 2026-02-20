@@ -54,6 +54,8 @@
 
 
             <!-- BALANCE CARD -->
+
+            <!-- BALANCE CARD -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,21 +64,51 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- BALANCE ROW: label + amount vertically, sync status horizontally -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Your Balance"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Rs 2,450.00"
-                    android:textColor="#FFFFFF"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
+                    <!-- Balance Vertical Stack -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvBalanceLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your Balance"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="Rs 2,450.00"
+                            android:textColor="#FFFFFF"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Sync Status on Right -->
+                    <TextView
+                        android:id="@+id/tvSyncStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:gravity="center_vertical"
+                        android:text="Not Synced"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp" />
+                </LinearLayout>
 
                 <!-- Income & Outgoing -->
                 <LinearLayout
@@ -86,6 +118,7 @@
                     android:orientation="horizontal"
                     android:weightSum="2">
 
+                    <!-- INCOME -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -93,6 +126,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tvIncomeLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Income"
@@ -100,6 +134,7 @@
                             android:textSize="13sp" />
 
                         <TextView
+                            android:id="@+id/tvIncome"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="+Rs 1,200"
@@ -108,6 +143,7 @@
                             android:textStyle="bold" />
                     </LinearLayout>
 
+                    <!-- OUTGOING -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -116,6 +152,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tvExpenseLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Outgoing"
@@ -123,6 +160,7 @@
                             android:textSize="13sp" />
 
                         <TextView
+                            android:id="@+id/tvExpense"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="-Rs 750"
