@@ -12,10 +12,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Calendar;
 
-public class AddExpenseActivity extends AppCompatActivity {
+public class AddIncomeActivity extends AppCompatActivity {
 
     EditText edtAmount, edtDate, edtTitle, edtDescription, edtNewCategory;
-    Button btnAddExpense;
+    Button btnAddIncome;
     GridLayout gridCategory;
 
     String selectedCategory = "";
@@ -26,23 +26,23 @@ public class AddExpenseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_expense);
+        setContentView(R.layout.activity_add_income);
 
         db = new DatabaseHandler(this);
         auth = FirebaseAuth.getInstance();
 
-        edtAmount = findViewById(R.id.edtAmount);
-        edtDate = findViewById(R.id.edtDate);
-        edtTitle = findViewById(R.id.edtTitle);
-        edtDescription = findViewById(R.id.edtDescription);
-        edtNewCategory = findViewById(R.id.edtNewCategory);
-        btnAddExpense = findViewById(R.id.btnAddExpense);
-        gridCategory = findViewById(R.id.gridCategory);
+        edtAmount = findViewById(R.id.edtIncomeAmount);
+        edtDate = findViewById(R.id.edtIncomeDate);
+        edtTitle = findViewById(R.id.edtIncomeTitle);
+        edtDescription = findViewById(R.id.edtIncomeDescription);
+        edtNewCategory = findViewById(R.id.edtNewIncomeCategory);
+        btnAddIncome = findViewById(R.id.btnAddIncome);
+        gridCategory = findViewById(R.id.gridIncomeCategory);
 
         setupDatePicker();
         setupCategorySelection();
 
-        btnAddExpense.setOnClickListener(v -> saveExpense());
+        btnAddIncome.setOnClickListener(v -> saveIncome());
     }
 
     private void setupDatePicker() {
@@ -84,7 +84,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         }
     }
 
-    private void saveExpense() {
+    private void saveIncome() {
 
         String amountStr = edtAmount.getText().toString().trim();
         String title = edtTitle.getText().toString().trim();
@@ -103,8 +103,8 @@ public class AddExpenseActivity extends AppCompatActivity {
             selectedCategory = edtNewCategory.getText().toString().trim();
         }
 
-        // 1️⃣ Save to SQLite (unsynced)
-        long localId = db.insertExpense(
+        // 1️⃣ Save to SQLite first
+        long localId = db.insertIncome(
                 "",
                 userUid,
                 title,
@@ -119,19 +119,19 @@ public class AddExpenseActivity extends AppCompatActivity {
         firebaseRef = FirebaseDatabase.getInstance()
                 .getReference("Users")
                 .child(userUid)
-                .child("expenses");
+                .child("income");
 
         String firebaseId = firebaseRef.push().getKey();
 
-        ExpenseModel expense = new ExpenseModel(
+        IncomeModel income = new IncomeModel(
                 firebaseId, userUid, title, amount,
                 selectedCategory, description, date
         );
 
-        firebaseRef.child(firebaseId).setValue(expense)
+        firebaseRef.child(firebaseId).setValue(income)
                 .addOnSuccessListener(unused -> {
-                    db.markExpenseAsSynced((int) localId, firebaseId);
-                    Toast.makeText(this, "Expense Added & Synced", Toast.LENGTH_SHORT).show();
+                    db.markIncomeAsSynced((int) localId, firebaseId);
+                    Toast.makeText(this, "Income Added & Synced", Toast.LENGTH_SHORT).show();
                     finish();
                 });
     }
