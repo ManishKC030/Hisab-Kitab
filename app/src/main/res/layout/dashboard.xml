@@ -5,11 +5,12 @@
     android:layout_height="match_parent"
     android:background="#F5F6FA">
 
-
+    <!-- SCROLL CONTENT -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F5F6FA">
+        android:layout_above="@id/bottomNav"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,10 +28,12 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Dynamic Name -->
                     <TextView
+                        android:id="@+id/tvHelloName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Hello, Manish"
+                        android:text="Hello"
                         android:textColor="#888888"
                         android:textSize="14sp" />
 
@@ -43,7 +46,6 @@
                         android:textStyle="bold" />
                 </LinearLayout>
 
-                <!-- Notification Icon -->
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
@@ -62,23 +64,48 @@
                 android:orientation="vertical"
                 android:padding="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Your Balance"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Rs 2,450.00"
-                    android:textColor="#FFFFFF"
-                    android:textSize="26sp"
-                    android:textStyle="bold" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                <!-- Income & Outgoing -->
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your Balance"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp" />
+
+                        <!-- Dynamic Balance -->
+                        <TextView
+                            android:id="@+id/tvBalance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="6dp"
+                            android:text="Rs 0.00"
+                            android:textColor="#FFFFFF"
+                            android:textSize="26sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Dynamic Sync Status -->
+                    <TextView
+                        android:id="@+id/tvSyncStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Checking..."
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <!-- Income & Expense -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -99,10 +126,12 @@
                             android:textColor="#DDFFFFFF"
                             android:textSize="13sp" />
 
+                        <!-- Dynamic Income -->
                         <TextView
+                            android:id="@+id/tvIncome"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="+Rs 1,200"
+                            android:text="+ Rs 0"
                             android:textColor="#FFFFFF"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -122,16 +151,17 @@
                             android:textColor="#DDFFFFFF"
                             android:textSize="13sp" />
 
+                        <!-- Dynamic Expense -->
                         <TextView
+                            android:id="@+id/tvExpense"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="-Rs 750"
+                            android:text="- Rs 0"
                             android:textColor="#FFFFFF"
                             android:textSize="16sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
-
             </LinearLayout>
 
 
@@ -144,6 +174,7 @@
                 android:weightSum="2">
 
                 <Button
+                    android:id="@+id/btnAddIncome"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -156,6 +187,7 @@
                     android:layout_height="wrap_content" />
 
                 <Button
+                    android:id="@+id/btnAddExpense"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
@@ -165,7 +197,7 @@
             </LinearLayout>
 
 
-            <!-- RECENT TRANSACTIONS -->
+            <!-- RECENT TRANSACTIONS TITLE -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -175,100 +207,107 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
             <!-- FILTER BUTTONS -->
+
             <LinearLayout
+
                 android:layout_width="match_parent"
+
                 android:layout_height="wrap_content"
+
                 android:layout_marginTop="12dp"
+
                 android:layout_marginBottom="10dp"
+
                 android:gravity="center"
+
                 android:orientation="horizontal">
 
+
+
                 <Button
+
                     android:layout_width="112dp"
+
                     android:layout_height="36dp"
+
                     android:background="@drawable/filter_selected"
+
                     android:paddingHorizontal="18dp"
+
                     android:text="All"
+
                     android:textColor="#FFFFFF"
+
                     android:textSize="14sp" />
 
+
+
                 <Space
+
                     android:layout_width="12dp"
+
                     android:layout_height="wrap_content" />
 
+
+
                 <Button
+
                     android:layout_width="112dp"
+
                     android:layout_height="36dp"
+
                     android:background="@drawable/filter_unselected"
+
                     android:paddingHorizontal="18dp"
+
                     android:text="Income"
+
                     android:textColor="#ffffff"
+
                     android:textSize="14sp" />
+
+
 
                 <Space
+
                     android:layout_width="12dp"
+
                     android:layout_height="wrap_content" />
 
+
+
                 <Button
+
                     android:layout_width="112dp"
+
                     android:layout_height="36dp"
+
                     android:background="@drawable/filter_unselected"
+
                     android:paddingHorizontal="18dp"
+
                     android:text="Expense"
+
                     android:textColor="#ffffff"
+
                     android:textSize="14sp" />
+
+
 
             </LinearLayout>
 
-
-            <!-- Transaction Item -->
+            <!-- Dynamic Transaction Container -->
             <LinearLayout
+                android:id="@+id/transactionContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingVertical="12dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Netflix Subscription"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="- $15.00"
-                    android:textColor="#E53935"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingVertical="12dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Salary"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="+ $1,500.00"
-                    android:textColor="#2E7D32"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                android:layout_marginTop="10dp"
+                android:orientation="vertical" />
 
         </LinearLayout>
     </ScrollView>
+
+
     <!-- BOTTOM NAVIGATION -->
     <LinearLayout
         android:id="@+id/bottomNav"
@@ -278,16 +317,15 @@
         android:background="#FFFFFF"
         android:elevation="8dp"
         android:orientation="horizontal"
-        android:paddingHorizontal="10dp"
         android:weightSum="4">
 
         <!-- HOME -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_height="match_parent">
 
             <ImageView
                 android:layout_width="24dp"
@@ -302,52 +340,94 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
-
-
         <!-- STATEMENT -->
+
         <LinearLayout
+
             android:layout_width="0dp"
+
             android:layout_weight="1"
+
             android:layout_height="match_parent"
+
             android:gravity="center"
+
             android:orientation="vertical">
 
+
+
             <ImageView
+
                 android:layout_width="24dp"
+
                 android:layout_height="24dp"
+
                 android:src="@android:drawable/ic_menu_agenda"
+
                 android:tint="#888888"/>
 
+
+
             <TextView
+
                 android:text="Statement"
+
                 android:textSize="12sp"
+
                 android:textColor="#888888"
+
                 android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"/>
+
         </LinearLayout>
+
+
+
 
 
         <!-- ANALYSIS -->
+
         <LinearLayout
+
             android:layout_width="0dp"
+
             android:layout_weight="1"
+
             android:layout_height="match_parent"
+
             android:gravity="center"
+
             android:orientation="vertical">
 
+
+
             <ImageView
+
                 android:layout_width="24dp"
+
                 android:layout_height="24dp"
+
                 android:src="@android:drawable/ic_menu_sort_by_size"
+
                 android:tint="#888888"/>
 
+
+
             <TextView
+
                 android:text="Analysis"
+
                 android:textSize="12sp"
+
                 android:textColor="#888888"
+
                 android:layout_width="wrap_content"
+
                 android:layout_height="wrap_content"/>
+
         </LinearLayout>
+
 
 
         <!-- ACCOUNT -->
@@ -355,9 +435,9 @@
             android:id="@+id/navBtnAccount"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="match_parent"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_height="match_parent">
 
             <ImageView
                 android:layout_width="24dp"

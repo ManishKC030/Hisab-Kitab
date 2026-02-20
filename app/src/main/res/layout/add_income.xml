@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2E7D32">
+
+    <!-- Header -->
+    <TextView
+        android:id="@+id/txtHeaderIncome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Income"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_margin="20dp"/>
+
+    <!-- White Card -->
+    <LinearLayout
+        android:layout_below="@id/txtHeaderIncome"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- Amount -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Amount"
+                    android:textStyle="bold"/>
+
+                <EditText
+                    android:id="@+id/edtIncomeAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Amount"
+                    android:textSize="24sp"
+                    android:inputType="numberDecimal"
+                    android:padding="12dp"/>
+
+                <!-- Date -->
+                <EditText
+                    android:id="@+id/edtIncomeDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Select Date"
+                    android:focusable="false"
+                    android:clickable="true"
+                    android:layout_marginTop="12dp"
+                    android:padding="12dp"/>
+
+                <!-- Title -->
+                <EditText
+                    android:id="@+id/edtIncomeTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Title"
+                    android:layout_marginTop="12dp"
+                    android:padding="12dp"/>
+
+                <!-- Category -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Category"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"/>
+
+                <GridLayout
+                    android:id="@+id/gridIncomeCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="3"
+                    android:layout_marginTop="12dp">
+
+                    <TextView
+                        android:id="@+id/catSalary"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Salary"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                    <TextView
+                        android:id="@+id/catBusiness"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Business"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                    <TextView
+                        android:id="@+id/catFreelance"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Freelance"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                    <TextView
+                        android:id="@+id/catInvestment"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Investment"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                    <TextView
+                        android:id="@+id/catGift"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Gift"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                    <TextView
+                        android:id="@+id/catOtherIncome"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_columnWeight="1"
+                        android:gravity="center"
+                        android:text="Other"
+                        android:background="@drawable/bg_category_unselected"
+                        android:layout_margin="6dp"/>
+
+                </GridLayout>
+
+                <!-- Add New Category Input (Hidden Initially) -->
+                <EditText
+                    android:id="@+id/edtNewIncomeCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter New Category"
+                    android:visibility="gone"
+                    android:layout_marginTop="12dp"
+                    android:padding="12dp"/>
+
+                <!-- Description -->
+                <EditText
+                    android:id="@+id/edtIncomeDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:hint="Description....."
+                    android:gravity="top"
+                    android:layout_marginTop="16dp"
+                    android:padding="12dp"/>
+
+                <!-- Add Button -->
+                <Button
+                    android:id="@+id/btnAddIncome"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="Add Income"
+                    android:textColor="#FFFFFF"
+                    android:layout_marginTop="20dp"
+                    android:backgroundTint="#2E7D32"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</RelativeLayout>
