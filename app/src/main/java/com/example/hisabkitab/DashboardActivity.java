@@ -9,7 +9,10 @@ import android.graphics.Color;
 import android.view.ViewGroup;
 import android.view.View;
 
-public class DashboardActvity extends Activity {
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+public class DashboardActivity extends Activity {
 
     LinearLayout navBtnAccount, transactionContainer;
     Button btnAddIncome, btnAddExpense;
@@ -17,12 +20,22 @@ public class DashboardActvity extends Activity {
     TextView tvHelloName, tvBalance, tvIncome, tvExpense, tvSyncStatus;
 
     DatabaseHandler db;
-    String currentUserUid = "demo_uid"; // Replace with Firebase UID if needed
+
+    FirebaseAuth mAuth;
+    FirebaseUser currentUser;
+    String currentUserUid;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.dashboard);
+
+        // Initialize Firebase
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+
+
+        currentUserUid = currentUser.getUid();
 
         // Initialize views
         navBtnAccount = findViewById(R.id.navBtnAccount);
@@ -38,18 +51,34 @@ public class DashboardActvity extends Activity {
 
         db = new DatabaseHandler(this);
 
+        setUserName();
         loadDashboardData();
 
         navBtnAccount.setOnClickListener(v ->
                 startActivity(new Intent(this, AccountActivity.class)));
 
-        // Open Add Income
         btnAddIncome.setOnClickListener(v ->
                 startActivity(new Intent(this, AddIncomeActivity.class)));
 
-        // Open Add Expense
         btnAddExpense.setOnClickListener(v ->
                 startActivity(new Intent(this, AddExpenseActivity.class)));
+    }
+
+    private void setUserName() {
+
+        if (currentUser.getDisplayName() != null &&
+                !currentUser.getDisplayName().isEmpty()) {
+
+            tvHelloName.setText("Hello, " + currentUser.getDisplayName());
+
+        } else if (currentUser.getEmail() != null) {
+
+            String emailName = currentUser.getEmail().split("@")[0];
+            tvHelloName.setText("Hello, " + emailName);
+
+        } else {
+            tvHelloName.setText("Hello, User");
+        }
     }
 
     private void loadDashboardData() {
@@ -112,9 +141,8 @@ public class DashboardActvity extends Activity {
 
         double balance = totalIncome - totalExpense;
 
-        tvHelloName.setText("Hello, Manish"); // Replace with real username if needed
-        tvIncome.setText("+Rs " + totalIncome);
-        tvExpense.setText("-Rs " + totalExpense);
+        tvIncome.setText("+ Rs " + totalIncome);
+        tvExpense.setText("- Rs " + totalExpense);
         tvBalance.setText("Rs " + balance);
 
         if (hasUnsynced) {
@@ -122,7 +150,7 @@ public class DashboardActvity extends Activity {
             tvSyncStatus.setTextColor(Color.RED);
         } else {
             tvSyncStatus.setText("All Synced");
-            tvSyncStatus.setTextColor(Color.GREEN);
+            tvSyncStatus.setTextColor(Color.parseColor("#2E7D32"));
         }
     }
 
@@ -143,7 +171,10 @@ public class DashboardActvity extends Activity {
 
         TextView tvAmount = new TextView(this);
         tvAmount.setTextSize(14);
-        tvAmount.setTextColor(isIncome ? Color.parseColor("#2E7D32") : Color.parseColor("#E53935"));
+        tvAmount.setTextColor(isIncome ?
+                Color.parseColor("#2E7D32") :
+                Color.parseColor("#E53935"));
+
         tvAmount.setText((isIncome ? "+ Rs " : "- Rs ") + amount);
 
         row.addView(tvTitle);
