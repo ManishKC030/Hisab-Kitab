@@ -4,13 +4,15 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddExpenseActivity extends AppCompatActivity {
 
@@ -19,9 +21,10 @@ public class AddExpenseActivity extends AppCompatActivity {
     GridLayout gridCategory;
 
     String selectedCategory = "";
+
     DatabaseHandler db;
     FirebaseAuth auth;
-    DatabaseReference firebaseRef;
+    FirebaseFirestore firestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         db = new DatabaseHandler(this);
         auth = FirebaseAuth.getInstance();
+        firestore = FirebaseFirestore.getInstance();
 
         edtAmount = findViewById(R.id.edtAmount);
         edtDate = findViewById(R.id.edtDate);
@@ -90,6 +94,12 @@ public class AddExpenseActivity extends AppCompatActivity {
         String title = edtTitle.getText().toString().trim();
         String description = edtDescription.getText().toString().trim();
         String date = edtDate.getText().toString().trim();
+
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String userUid = auth.getCurrentUser().getUid();
 
         if (amountStr.isEmpty() || title.isEmpty() || date.isEmpty()) {
@@ -103,36 +113,52 @@ public class AddExpenseActivity extends AppCompatActivity {
             selectedCategory = edtNewCategory.getText().toString().trim();
         }
 
-        // 1️⃣ Save to SQLite (unsynced)
+        if (selectedCategory.isEmpty()) {
+            Toast.makeText(this, "Please select category", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        long timestamp = System.currentTimeMillis();
+
+        // 1️⃣ Save to SQLite first (unsynced)
         long localId = db.insertExpense(
-                "",
+                "", // firestoreId empty initially
                 userUid,
                 title,
                 amount,
                 selectedCategory,
                 description,
                 date,
-                0
+                0 // 0 = not synced
         );
 
-        // 2️⃣ Save to Firebase
-        firebaseRef = FirebaseDatabase.getInstance()
-                .getReference("Users")
-                .child(userUid)
-                .child("expenses");
+        // 2️⃣ Save to Firestore
+        Map<String, Object> expenseMap = new HashMap<>();
+        expenseMap.put("userId", userUid);
+        expenseMap.put("title", title);
+        expenseMap.put("amount", amount);
+        expenseMap.put("category", selectedCategory);
+        expenseMap.put("description", description);
+        expenseMap.put("date", date);
+        expenseMap.put("type", "expense");
+        expenseMap.put("timestamp", timestamp);
 
-        String firebaseId = firebaseRef.push().getKey();
+        firestore.collection("users")
+                .document(userUid)
+                .collection("transactions")
+                .add(expenseMap)
+                .addOnSuccessListener(documentReference -> {
 
-        ExpenseModel expense = new ExpenseModel(
-                firebaseId, userUid, title, amount,
-                selectedCategory, description, date
-        );
+                    String firestoreId = documentReference.getId();
 
-        firebaseRef.child(firebaseId).setValue(expense)
-                .addOnSuccessListener(unused -> {
-                    db.markExpenseAsSynced((int) localId, firebaseId);
+                    // 3️⃣ Update SQLite row as synced
+                    db.markExpenseAsSynced((int) localId, firestoreId);
+
                     Toast.makeText(this, "Expense Added & Synced", Toast.LENGTH_SHORT).show();
                     finish();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Saved locally. Will sync later.", Toast.LENGTH_LONG).show();
                 });
     }
 }
