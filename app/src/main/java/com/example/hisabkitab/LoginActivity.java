@@ -26,13 +26,13 @@ public class LoginActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
 
-        // Firebase
+        // Initialize Firebase
         auth = FirebaseAuth.getInstance();
 
-        // SQLite
+        // Initialize SQLite handler
         dbHandler = new DatabaseHandler(this);
 
-        // Views
+        // Initialize views
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
@@ -41,21 +41,24 @@ public class LoginActivity extends Activity {
 
         // If already logged in online
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(LoginActivity.this, DashboardActvity.class));
+            startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
             finish();
         }
 
+        // Login button click
         btnLogin.setOnClickListener(v -> loginUser());
 
+        // Go to Register
         txtGoToRegister.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             finish();
         });
 
+        // Forgot Password
         txtForgotPassword.setOnClickListener(v -> forgotPassword());
     }
 
-    // 🔹 Check internet
+    // 🔹 Check internet availability
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
@@ -65,13 +68,13 @@ public class LoginActivity extends Activity {
         return false;
     }
 
-    // 🔹 Login user
+    // 🔹 Login logic
     private void loginUser() {
         String email = edtEmail.getText().toString().trim();
         String password = edtPassword.getText().toString().trim();
 
         if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "All fields required", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -86,7 +89,7 @@ public class LoginActivity extends Activity {
                             FirebaseUser user = auth.getCurrentUser();
                             if (user != null && user.isEmailVerified()) {
                                 Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(LoginActivity.this, DashboardActvity.class));
+                                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                                 finish();
                             } else {
                                 Toast.makeText(this, "Please verify your email first!", Toast.LENGTH_LONG).show();
@@ -98,20 +101,26 @@ public class LoginActivity extends Activity {
                     });
         } else {
             // Offline login using SQLite
-            boolean exists = dbHandler.checkUser(email, password);
-            btnLogin.setEnabled(true);
-            if (exists) {
-                String name = dbHandler.getUsername(email, password);
-                Toast.makeText(this, "Offline login successful! Welcome " + name, Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(LoginActivity.this, DashboardActvity.class));
-                finish();
-            } else {
-                Toast.makeText(this, "No internet and offline login failed!", Toast.LENGTH_LONG).show();
+            try {
+                boolean exists = dbHandler.checkUser(email, password);
+                btnLogin.setEnabled(true);
+
+                if (exists) {
+                    String name = dbHandler.getUsername(email, password);
+                    Toast.makeText(this, "Offline login successful! Welcome " + name, Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
+                    finish();
+                } else {
+                    Toast.makeText(this, "No internet and offline login failed!", Toast.LENGTH_LONG).show();
+                }
+            } catch (Exception e) {
+                btnLogin.setEnabled(true);
+                Toast.makeText(this, "Database error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    // 🔹 Forgot password
+    // 🔹 Forgot Password
     private void forgotPassword() {
         String email = edtEmail.getText().toString().trim();
 

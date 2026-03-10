@@ -21,7 +21,10 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".DashboardActvity"/>
+        <activity android:name=".DashboardActivity"/>
         <activity android:name=".AccountActivity"/>
+        <activity android:name=".AddIncomeActivity"/>
+        <activity android:name=".AddExpenseActivity"/>
+        <activity android:name=".VerifyEmailActivity"/>
     </application>
 </manifest>  
