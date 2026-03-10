@@ -139,6 +139,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         return name;
     }
+    public void deleteUser(String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("users", "email=?", new String[]{email});
+        db.close();
+    }
 
     // ===========================
     // 🔹 EXPENSE METHODS
