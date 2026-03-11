@@ -7,6 +7,7 @@ import android.widget.*;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.view.ViewGroup;
+import androidx.appcompat.app.AlertDialog;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -18,7 +19,7 @@ import java.util.*;
 public class DashboardActivity extends Activity {
 
     LinearLayout navBtnAccount, transactionContainer;
-    Button btnAddIncome, btnAddExpense;
+    Button btnAddIncome, btnAddExpense, btnFilter;
 
     TextView tvHelloName, tvBalance, tvIncome, tvExpense, tvSyncStatus;
 
@@ -36,7 +37,7 @@ public class DashboardActivity extends Activity {
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
-        if(currentUser == null){
+        if (currentUser == null) {
             finish();
             return;
         }
@@ -47,6 +48,7 @@ public class DashboardActivity extends Activity {
         transactionContainer = findViewById(R.id.transactionContainer);
         btnAddIncome = findViewById(R.id.btnAddIncome);
         btnAddExpense = findViewById(R.id.btnAddExpense);
+        btnFilter = findViewById(R.id.btnFilter);
 
         tvHelloName = findViewById(R.id.tvHelloName);
         tvBalance = findViewById(R.id.tvBalance);
@@ -56,7 +58,7 @@ public class DashboardActivity extends Activity {
 
         db = new DatabaseHandler(this);
 
-        // 🔄 AUTO SYNC
+        // Auto sync
         SyncManager.syncData(this);
 
         setUserName();
@@ -70,15 +72,24 @@ public class DashboardActivity extends Activity {
 
         btnAddExpense.setOnClickListener(v ->
                 startActivity(new Intent(this, AddExpenseActivity.class)));
+
+        btnFilter.setOnClickListener(v -> showFilterDialog());
     }
 
     private void setUserName() {
-        if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
+
+        if (currentUser.getDisplayName() != null &&
+                !currentUser.getDisplayName().isEmpty()) {
+
             tvHelloName.setText("Hello, " + currentUser.getDisplayName());
+
         } else if (currentUser.getEmail() != null) {
+
             String emailName = currentUser.getEmail().split("@")[0];
             tvHelloName.setText("Hello, " + emailName);
+
         } else {
+
             tvHelloName.setText("Hello, User");
         }
     }
@@ -88,77 +99,170 @@ public class DashboardActivity extends Activity {
         transactionContainer.removeAllViews();
 
         List<TransactionItem> allTransactions = new ArrayList<>();
+
         double totalIncome = 0;
         double totalExpense = 0;
+
         boolean hasUnsynced = false;
 
-        // 🔹 Load income
         Cursor incomeCursor = db.getIncome(currentUserUid);
+
         if (incomeCursor != null) {
+
             while (incomeCursor.moveToNext()) {
+
                 String title = incomeCursor.getString(incomeCursor.getColumnIndexOrThrow("title"));
                 double amount = incomeCursor.getDouble(incomeCursor.getColumnIndexOrThrow("amount"));
                 String date = incomeCursor.getString(incomeCursor.getColumnIndexOrThrow("date"));
                 int synced = incomeCursor.getInt(incomeCursor.getColumnIndexOrThrow("synced"));
 
                 totalIncome += amount;
+
                 if (synced == 0) hasUnsynced = true;
 
                 allTransactions.add(new TransactionItem(title, amount, date, true, synced));
             }
+
             incomeCursor.close();
         }
 
-        // 🔹 Load expenses
         Cursor expenseCursor = db.getExpenses(currentUserUid);
+
         if (expenseCursor != null) {
+
             while (expenseCursor.moveToNext()) {
+
                 String title = expenseCursor.getString(expenseCursor.getColumnIndexOrThrow("title"));
                 double amount = expenseCursor.getDouble(expenseCursor.getColumnIndexOrThrow("amount"));
                 String date = expenseCursor.getString(expenseCursor.getColumnIndexOrThrow("date"));
                 int synced = expenseCursor.getInt(expenseCursor.getColumnIndexOrThrow("synced"));
 
                 totalExpense += amount;
+
                 if (synced == 0) hasUnsynced = true;
 
                 allTransactions.add(new TransactionItem(title, amount, date, false, synced));
             }
+
             expenseCursor.close();
         }
 
-        // 🔹 Sort by date descending
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        allTransactions.sort((t1, t2) -> {
+        // SORT newest first
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        Collections.sort(allTransactions, (t1, t2) -> {
             try {
-                return sdf.parse(t2.date).compareTo(sdf.parse(t1.date));
+
+                Date d1 = sdf.parse(t1.date);
+                Date d2 = sdf.parse(t2.date);
+
+                return d2.compareTo(d1);
+
             } catch (ParseException e) {
+
                 return 0;
             }
         });
 
-        // 🔹 Add transaction views
         for (TransactionItem tx : allTransactions) {
+
             addTransactionView(tx.title, tx.amount, tx.date, tx.isIncome);
         }
 
         double balance = totalIncome - totalExpense;
+
         tvIncome.setText("+ Rs " + totalIncome);
         tvExpense.setText("- Rs " + totalExpense);
         tvBalance.setText("Rs " + balance);
 
         if (hasUnsynced) {
+
             tvSyncStatus.setText("Not Synced");
             tvSyncStatus.setTextColor(Color.RED);
+
         } else {
+
             tvSyncStatus.setText("All Synced");
             tvSyncStatus.setTextColor(Color.WHITE);
+        }
+    }
+
+    private void showFilterDialog() {
+
+        String[] options = {"All Transactions", "Income Only", "Expense Only"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Filter Transactions");
+
+        builder.setItems(options, (dialog, which) -> {
+
+            if (which == 0) {
+
+                loadDashboardData();
+
+            } else if (which == 1) {
+
+                loadIncomeOnly();
+
+            } else if (which == 2) {
+
+                loadExpenseOnly();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void loadIncomeOnly() {
+
+        transactionContainer.removeAllViews();
+
+        Cursor cursor = db.getIncome(currentUserUid);
+
+        if (cursor != null) {
+
+            while (cursor.moveToNext()) {
+
+                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+
+                addTransactionView(title, amount, date, true);
+            }
+
+            cursor.close();
+        }
+    }
+
+    private void loadExpenseOnly() {
+
+        transactionContainer.removeAllViews();
+
+        Cursor cursor = db.getExpenses(currentUserUid);
+
+        if (cursor != null) {
+
+            while (cursor.moveToNext()) {
+
+                String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
+                double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
+                String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+
+                addTransactionView(title, amount, date, false);
+            }
+
+            cursor.close();
         }
     }
 
     private void addTransactionView(String title, double amount, String date, boolean isIncome) {
 
         LinearLayout row = new LinearLayout(this);
-        row.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        row.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+
         row.setOrientation(LinearLayout.VERTICAL);
         row.setPadding(0, 10, 0, 10);
 
@@ -166,19 +270,29 @@ public class DashboardActivity extends Activity {
         rowTop.setOrientation(LinearLayout.HORIZONTAL);
 
         TextView tvTitle = new TextView(this);
-        tvTitle.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+
+        tvTitle.setLayoutParams(new LinearLayout.LayoutParams(
+                0,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                1));
+
         tvTitle.setText(title);
         tvTitle.setTextSize(14);
 
         TextView tvAmount = new TextView(this);
+
         tvAmount.setTextSize(14);
-        tvAmount.setTextColor(isIncome ? Color.parseColor("#2E7D32") : Color.parseColor("#E53935"));
+        tvAmount.setTextColor(isIncome ?
+                Color.parseColor("#2E7D32") :
+                Color.parseColor("#E53935"));
+
         tvAmount.setText((isIncome ? "+ Rs " : "- Rs ") + amount);
 
         rowTop.addView(tvTitle);
         rowTop.addView(tvAmount);
 
         TextView tvDate = new TextView(this);
+
         tvDate.setTextSize(12);
         tvDate.setTextColor(Color.LTGRAY);
         tvDate.setText("Date: " + date);
@@ -191,8 +305,11 @@ public class DashboardActivity extends Activity {
 
     @Override
     protected void onResume() {
+
         super.onResume();
+
         SyncManager.syncData(this);
+
         loadDashboardData();
     }
 }
