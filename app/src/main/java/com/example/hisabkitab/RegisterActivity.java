@@ -17,27 +17,24 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegisterActivity extends Activity {
+
     TextView txtGoToLogin;
     EditText edtName, edtEmail, edtPassword;
     Button btnCreateAccount;
 
     FirebaseAuth auth;
     FirebaseFirestore db;
-    DatabaseHandler dbHandler; // SQLite handler
+    DatabaseHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.register);
 
-        // Firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-
-        // SQLite
         dbHandler = new DatabaseHandler(this);
 
-        // Views
         edtName = findViewById(R.id.edtName);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
@@ -52,7 +49,6 @@ public class RegisterActivity extends Activity {
         });
     }
 
-    // 🔹 Check internet connectivity
     private boolean isNetworkAvailable() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (cm != null) {
@@ -62,7 +58,6 @@ public class RegisterActivity extends Activity {
         return false;
     }
 
-    // 🔹 Register user
     private void registerUser() {
 
         if (!isNetworkAvailable()) {
@@ -81,7 +76,7 @@ public class RegisterActivity extends Activity {
 
         btnCreateAccount.setEnabled(false);
 
-        // 🔹 Check if user already exists
+        // Check if email already exists
         auth.fetchSignInMethodsForEmail(email)
                 .addOnCompleteListener(task -> {
                     btnCreateAccount.setEnabled(true);
@@ -94,7 +89,7 @@ public class RegisterActivity extends Activity {
                             return;
                         }
 
-                        // 🔹 Create Firebase user
+                        // Create Firebase user
                         auth.createUserWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(regTask -> {
                                     btnCreateAccount.setEnabled(true);
@@ -102,10 +97,10 @@ public class RegisterActivity extends Activity {
                                     if (regTask.isSuccessful()) {
                                         FirebaseUser user = auth.getCurrentUser();
                                         if (user != null) {
-                                            // 🔹 Send verification email
+                                            // Send verification email
                                             user.sendEmailVerification()
                                                     .addOnSuccessListener(unused -> {
-                                                        // 🔹 Store user in Firestore
+                                                        // Store user in Firestore
                                                         Map<String, Object> userMap = new HashMap<>();
                                                         userMap.put("name", name);
                                                         userMap.put("email", email);
@@ -114,16 +109,12 @@ public class RegisterActivity extends Activity {
                                                                 .document(user.getUid())
                                                                 .set(userMap);
 
-                                                        // 🔹 Store in SQLite for offline login
+                                                        // Store in SQLite
                                                         dbHandler.insertUser(user.getUid(), email, password, name);
 
-                                                        // 🔹 Sign out user to prevent login before verification
-                                                        auth.signOut();
-
-                                                        // 🔹 Go to VerifyEmail page
-                                                        Intent intent = new Intent(RegisterActivity.this, VerifyEmailActivity.class);
-                                                        intent.putExtra("email", email);
-                                                        startActivity(intent);
+                                                        // ✅ DO NOT sign out here
+                                                        // Go to VerifyEmailActivity
+                                                        startActivity(new Intent(RegisterActivity.this, VerifyEmailActivity.class));
                                                         finish();
                                                     })
                                                     .addOnFailureListener(e -> {

@@ -20,6 +20,8 @@ public class LoginActivity extends Activity {
 
     FirebaseAuth auth;
     DatabaseHandler dbHandler;
+    // 🔹 Add this line here as a member variable
+    SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +30,13 @@ public class LoginActivity extends Activity {
 
         auth = FirebaseAuth.getInstance();
         dbHandler = new DatabaseHandler(this);
-
+        sessionManager = new SessionManager(this);
         edtEmail = findViewById(R.id.edtEmail);
         edtPassword = findViewById(R.id.edtPassword);
         btnLogin = findViewById(R.id.btnLogin);
         txtGoToRegister = findViewById(R.id.txtGoToRegister);
         txtForgotPassword = findViewById(R.id.txtForgotPassword);
+
 
         // If already logged in online
         if (auth.getCurrentUser() != null) {
@@ -127,15 +130,19 @@ public class LoginActivity extends Activity {
         // 🔹 OFFLINE LOGIN
         // ===============================
 
+        // ===============================
+// 🔹 OFFLINE LOGIN
+// ===============================
         else {
 
             boolean exists = dbHandler.checkUser(email, password);
-
             btnLogin.setEnabled(true);
 
             if (exists) {
-
                 String name = dbHandler.getUsername(email, password);
+
+                // 🔹 Save offline session
+                sessionManager.saveUserSession("offline_" + email, email, name);
 
                 Toast.makeText(this,
                         "Offline Login Successful\nWelcome " + name,
@@ -151,9 +158,7 @@ public class LoginActivity extends Activity {
                         Toast.LENGTH_LONG).show();
 
             }
-
         }
-
     }
 
     // 🔹 Forgot Password

@@ -7,10 +7,13 @@ import android.widget.*;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.view.ViewGroup;
-import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class DashboardActivity extends Activity {
 
@@ -30,7 +33,6 @@ public class DashboardActivity extends Activity {
         super.onCreate(b);
         setContentView(R.layout.dashboard);
 
-        // Firebase
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
 
@@ -41,7 +43,6 @@ public class DashboardActivity extends Activity {
 
         currentUserUid = currentUser.getUid();
 
-        // Views
         navBtnAccount = findViewById(R.id.navBtnAccount);
         transactionContainer = findViewById(R.id.transactionContainer);
         btnAddIncome = findViewById(R.id.btnAddIncome);
@@ -72,17 +73,11 @@ public class DashboardActivity extends Activity {
     }
 
     private void setUserName() {
-
-        if (currentUser.getDisplayName() != null &&
-                !currentUser.getDisplayName().isEmpty()) {
-
+        if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
             tvHelloName.setText("Hello, " + currentUser.getDisplayName());
-
         } else if (currentUser.getEmail() != null) {
-
             String emailName = currentUser.getEmail().split("@")[0];
             tvHelloName.setText("Hello, " + emailName);
-
         } else {
             tvHelloName.setText("Hello, User");
         }
@@ -92,81 +87,69 @@ public class DashboardActivity extends Activity {
 
         transactionContainer.removeAllViews();
 
+        List<TransactionItem> allTransactions = new ArrayList<>();
         double totalIncome = 0;
         double totalExpense = 0;
         boolean hasUnsynced = false;
 
-        // INCOME
+        // 🔹 Load income
         Cursor incomeCursor = db.getIncome(currentUserUid);
-
         if (incomeCursor != null) {
-
             while (incomeCursor.moveToNext()) {
-
-                double amount = incomeCursor.getDouble(
-                        incomeCursor.getColumnIndexOrThrow("amount"));
-
-                String title = incomeCursor.getString(
-                        incomeCursor.getColumnIndexOrThrow("title"));
-
-                String date = incomeCursor.getString(
-                        incomeCursor.getColumnIndexOrThrow("date"));
+                String title = incomeCursor.getString(incomeCursor.getColumnIndexOrThrow("title"));
+                double amount = incomeCursor.getDouble(incomeCursor.getColumnIndexOrThrow("amount"));
+                String date = incomeCursor.getString(incomeCursor.getColumnIndexOrThrow("date"));
+                int synced = incomeCursor.getInt(incomeCursor.getColumnIndexOrThrow("synced"));
 
                 totalIncome += amount;
-
-                int synced = incomeCursor.getInt(
-                        incomeCursor.getColumnIndexOrThrow("synced"));
-
                 if (synced == 0) hasUnsynced = true;
 
-                addTransactionView(title, amount, date, true);
+                allTransactions.add(new TransactionItem(title, amount, date, true, synced));
             }
-
             incomeCursor.close();
         }
 
-        // EXPENSE
+        // 🔹 Load expenses
         Cursor expenseCursor = db.getExpenses(currentUserUid);
-
         if (expenseCursor != null) {
-
             while (expenseCursor.moveToNext()) {
-
-                double amount = expenseCursor.getDouble(
-                        expenseCursor.getColumnIndexOrThrow("amount"));
-
-                String title = expenseCursor.getString(
-                        expenseCursor.getColumnIndexOrThrow("title"));
-
-                String date = expenseCursor.getString(
-                        expenseCursor.getColumnIndexOrThrow("date"));
+                String title = expenseCursor.getString(expenseCursor.getColumnIndexOrThrow("title"));
+                double amount = expenseCursor.getDouble(expenseCursor.getColumnIndexOrThrow("amount"));
+                String date = expenseCursor.getString(expenseCursor.getColumnIndexOrThrow("date"));
+                int synced = expenseCursor.getInt(expenseCursor.getColumnIndexOrThrow("synced"));
 
                 totalExpense += amount;
-
-                int synced = expenseCursor.getInt(
-                        expenseCursor.getColumnIndexOrThrow("synced"));
-
                 if (synced == 0) hasUnsynced = true;
 
-                addTransactionView(title, amount, date, false);
+                allTransactions.add(new TransactionItem(title, amount, date, false, synced));
             }
-
             expenseCursor.close();
         }
 
-        double balance = totalIncome - totalExpense;
+        // 🔹 Sort by date descending
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        allTransactions.sort((t1, t2) -> {
+            try {
+                return sdf.parse(t2.date).compareTo(sdf.parse(t1.date));
+            } catch (ParseException e) {
+                return 0;
+            }
+        });
 
+        // 🔹 Add transaction views
+        for (TransactionItem tx : allTransactions) {
+            addTransactionView(tx.title, tx.amount, tx.date, tx.isIncome);
+        }
+
+        double balance = totalIncome - totalExpense;
         tvIncome.setText("+ Rs " + totalIncome);
         tvExpense.setText("- Rs " + totalExpense);
         tvBalance.setText("Rs " + balance);
 
         if (hasUnsynced) {
-
             tvSyncStatus.setText("Not Synced");
             tvSyncStatus.setTextColor(Color.RED);
-
         } else {
-
             tvSyncStatus.setText("All Synced");
             tvSyncStatus.setTextColor(Color.WHITE);
         }
@@ -175,11 +158,7 @@ public class DashboardActivity extends Activity {
     private void addTransactionView(String title, double amount, String date, boolean isIncome) {
 
         LinearLayout row = new LinearLayout(this);
-
-        row.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-
+        row.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         row.setOrientation(LinearLayout.VERTICAL);
         row.setPadding(0, 10, 0, 10);
 
@@ -187,26 +166,19 @@ public class DashboardActivity extends Activity {
         rowTop.setOrientation(LinearLayout.HORIZONTAL);
 
         TextView tvTitle = new TextView(this);
-        tvTitle.setLayoutParams(new LinearLayout.LayoutParams(
-                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-
+        tvTitle.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         tvTitle.setText(title);
         tvTitle.setTextSize(14);
 
         TextView tvAmount = new TextView(this);
-
         tvAmount.setTextSize(14);
-        tvAmount.setTextColor(isIncome ?
-                Color.parseColor("#2E7D32") :
-                Color.parseColor("#E53935"));
-
+        tvAmount.setTextColor(isIncome ? Color.parseColor("#2E7D32") : Color.parseColor("#E53935"));
         tvAmount.setText((isIncome ? "+ Rs " : "- Rs ") + amount);
 
         rowTop.addView(tvTitle);
         rowTop.addView(tvAmount);
 
         TextView tvDate = new TextView(this);
-
         tvDate.setTextSize(12);
         tvDate.setTextColor(Color.LTGRAY);
         tvDate.setText("Date: " + date);
@@ -220,10 +192,7 @@ public class DashboardActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        // 🔄 SYNC AGAIN WHEN RETURNING
         SyncManager.syncData(this);
-
         loadDashboardData();
     }
 }
