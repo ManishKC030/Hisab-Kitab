@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class DashboardActivity extends Activity {
@@ -174,17 +172,8 @@ public class DashboardActivity extends Activity {
             expenseCursor.close();
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
-        Collections.sort(allTransactions, (t1, t2) -> {
-            try {
-                Date d1 = sdf.parse(t1.date);
-                Date d2 = sdf.parse(t2.date);
-                return d2.compareTo(d1);
-            } catch (ParseException e) {
-                return 0;
-            }
-        });
+        // Sort by newest date
+        Collections.sort(allTransactions, (a, b) -> b.date.compareTo(a.date));
 
         for (TransactionItem tx : allTransactions) {
 
@@ -210,6 +199,8 @@ public class DashboardActivity extends Activity {
 
         transactionContainer.removeAllViews();
 
+        List<TransactionItem> list = new ArrayList<>();
+
         Cursor cursor = db.getIncome(currentUserUid);
 
         if (cursor != null) {
@@ -220,16 +211,24 @@ public class DashboardActivity extends Activity {
                 double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
 
-                addTransactionView(title, amount, date, true);
+                list.add(new TransactionItem(title, amount, date, true, 1));
             }
 
             cursor.close();
+        }
+
+        Collections.sort(list, (a, b) -> b.date.compareTo(a.date));
+
+        for (TransactionItem tx : list) {
+            addTransactionView(tx.title, tx.amount, tx.date, true);
         }
     }
 
     private void loadExpenseOnly() {
 
         transactionContainer.removeAllViews();
+
+        List<TransactionItem> list = new ArrayList<>();
 
         Cursor cursor = db.getExpenses(currentUserUid);
 
@@ -241,10 +240,16 @@ public class DashboardActivity extends Activity {
                 double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
 
-                addTransactionView(title, amount, date, false);
+                list.add(new TransactionItem(title, amount, date, false, 1));
             }
 
             cursor.close();
+        }
+
+        Collections.sort(list, (a, b) -> b.date.compareTo(a.date));
+
+        for (TransactionItem tx : list) {
+            addTransactionView(tx.title, tx.amount, tx.date, false);
         }
     }
 
@@ -256,7 +261,7 @@ public class DashboardActivity extends Activity {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
         row.setOrientation(LinearLayout.VERTICAL);
-        row.setPadding(0, 10, 0, 10);
+        row.setPadding(0, 20, 0, 20);
 
         LinearLayout rowTop = new LinearLayout(this);
         rowTop.setOrientation(LinearLayout.HORIZONTAL);
@@ -268,10 +273,11 @@ public class DashboardActivity extends Activity {
                 1));
 
         tvTitle.setText(title);
-        tvTitle.setTextSize(14);
+        tvTitle.setTextSize(18);
+        tvTitle.setTextColor(Color.WHITE);
 
         TextView tvAmount = new TextView(this);
-        tvAmount.setTextSize(14);
+        tvAmount.setTextSize(18);
 
         tvAmount.setTextColor(isIncome ?
                 Color.parseColor("#2E7D32") :
@@ -283,9 +289,9 @@ public class DashboardActivity extends Activity {
         rowTop.addView(tvAmount);
 
         TextView tvDate = new TextView(this);
-        tvDate.setTextSize(12);
+        tvDate.setTextSize(14);
         tvDate.setTextColor(Color.LTGRAY);
-        tvDate.setText("Date: " + date);
+        tvDate.setText(date);
 
         row.addView(rowTop);
         row.addView(tvDate);
