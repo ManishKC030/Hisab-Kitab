@@ -126,7 +126,7 @@ public class DashboardActivity extends Activity {
                 selected == 2 ? R.drawable.filter_selected : R.drawable.filter_unselected);
     }
 
-    // ---------- LOAD ALL TRANSACTIONS ----------
+    // ================= LOAD ALL =================
 
     private void loadAllTransactions() {
 
@@ -148,11 +148,15 @@ public class DashboardActivity extends Activity {
                 double amount = incomeCursor.getDouble(incomeCursor.getColumnIndexOrThrow("amount"));
                 String date = incomeCursor.getString(incomeCursor.getColumnIndexOrThrow("date"));
                 int synced = incomeCursor.getInt(incomeCursor.getColumnIndexOrThrow("synced"));
+                String category = incomeCursor.getString(incomeCursor.getColumnIndexOrThrow("category"));
 
                 totalIncome += amount;
+
                 if (synced == 0) hasUnsynced = true;
 
-                allTransactions.add(new TransactionItem(title, amount, date, true, synced));
+                allTransactions.add(
+                        new TransactionItem(title, amount, date, true, synced, category)
+                );
             }
 
             incomeCursor.close();
@@ -168,11 +172,15 @@ public class DashboardActivity extends Activity {
                 double amount = expenseCursor.getDouble(expenseCursor.getColumnIndexOrThrow("amount"));
                 String date = expenseCursor.getString(expenseCursor.getColumnIndexOrThrow("date"));
                 int synced = expenseCursor.getInt(expenseCursor.getColumnIndexOrThrow("synced"));
+                String category = expenseCursor.getString(expenseCursor.getColumnIndexOrThrow("category"));
 
                 totalExpense += amount;
+
                 if (synced == 0) hasUnsynced = true;
 
-                allTransactions.add(new TransactionItem(title, amount, date, false, synced));
+                allTransactions.add(
+                        new TransactionItem(title, amount, date, false, synced, category)
+                );
             }
 
             expenseCursor.close();
@@ -200,7 +208,7 @@ public class DashboardActivity extends Activity {
         }
     }
 
-    // ---------- INCOME FILTER ----------
+    // ================= INCOME FILTER =================
 
     private void loadIncomeOnly() {
 
@@ -217,8 +225,9 @@ public class DashboardActivity extends Activity {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
 
-                list.add(new TransactionItem(title, amount, date, true, 1));
+                list.add(new TransactionItem(title, amount, date, true, 1, category));
             }
 
             cursor.close();
@@ -231,7 +240,7 @@ public class DashboardActivity extends Activity {
         }
     }
 
-    // ---------- EXPENSE FILTER ----------
+    // ================= EXPENSE FILTER =================
 
     private void loadExpenseOnly() {
 
@@ -248,8 +257,9 @@ public class DashboardActivity extends Activity {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
 
-                list.add(new TransactionItem(title, amount, date, false, 1));
+                list.add(new TransactionItem(title, amount, date, false, 1, category));
             }
 
             cursor.close();
@@ -262,7 +272,7 @@ public class DashboardActivity extends Activity {
         }
     }
 
-    // ---------- SORTING METHOD ----------
+    // ================= SORT =================
 
     private void sortTransactions(List<TransactionItem> list) {
 
@@ -282,7 +292,7 @@ public class DashboardActivity extends Activity {
         });
     }
 
-    // ---------- UI CREATION ----------
+    // ================= UI =================
 
     private void addTransactionView(String title, double amount, String date, boolean isIncome) {
 
@@ -328,6 +338,7 @@ public class DashboardActivity extends Activity {
         row.addView(tvDate);
 
         transactionContainer.addView(row);
+
         View divider = new View(this);
         divider.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, 1));
