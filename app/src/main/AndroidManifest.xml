@@ -27,4 +27,5 @@
         <activity android:name=".AddExpenseActivity"/>
         <activity android:name=".VerifyEmailActivity"/>
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>  
