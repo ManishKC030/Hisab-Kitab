@@ -20,7 +20,7 @@ HIsabKitab stores financial data locally on your device using SQLite and provide
 - XML
 - MPAndroidChart
 
-## Algorithms Used 
+## 🧠 Algorithms Used 
 
 - Aggregation Algorithm 
 - Trend Analysis
@@ -34,6 +34,3 @@ Charts used:
 - Pie Chart – Income and expense distribution
 - Bar Chart – Spending trends
 - Line Chart – Transaction activity over time
-## Author
-Manish KC  
-Manoj Poudel
