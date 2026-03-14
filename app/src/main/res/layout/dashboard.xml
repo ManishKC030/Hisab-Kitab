@@ -358,6 +358,7 @@
         <!-- ANALYSIS -->
 
         <LinearLayout
+            android:id = "@+id/navBtnAnalytics"
 
             android:layout_width="0dp"
 
