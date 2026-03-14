@@ -16,7 +16,9 @@ An Android Expense Tracker App built using Java.
 
 ## Algorithms Used 
 
-- Aggre
+- Aggregation Algorithm 
+- Trend Analysis
+- Moving Average Prediction
 
 ## Author
 Manish KC  
