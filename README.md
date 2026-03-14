@@ -26,6 +26,14 @@ HIsabKitab stores financial data locally on your device using SQLite and provide
 - Trend Analysis
 - Moving Average Prediction
 
+## 📈 Data Visualization
+
+The application uses MPAndroidChart to visualize financial data.
+
+Charts used:
+- Pie Chart – Income and expense distribution
+- Bar Chart – Spending trends
+- Line Chart – Transaction activity over time
 ## Author
 Manish KC  
 Manoj Poudel
