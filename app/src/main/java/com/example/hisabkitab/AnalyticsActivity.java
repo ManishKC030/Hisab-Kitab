@@ -59,13 +59,29 @@ public class AnalyticsActivity extends AppCompatActivity {
         db = new DatabaseHandler(this);
 
         btnIncome.setOnClickListener(v -> {
+
             showIncome = true;
             loadPieChart();
+
+            // UI change
+            btnIncome.setBackgroundResource(R.drawable.toggle_selected);
+            btnIncome.setTextColor(getResources().getColor(android.R.color.white));
+
+            btnExpense.setBackgroundResource(R.drawable.toggle_unselected);
+            btnExpense.setTextColor(getResources().getColor(android.R.color.black));
         });
 
         btnExpense.setOnClickListener(v -> {
+
             showIncome = false;
             loadPieChart();
+
+            // UI change
+            btnExpense.setBackgroundResource(R.drawable.toggle_selected);
+            btnExpense.setTextColor(getResources().getColor(android.R.color.white));
+
+            btnIncome.setBackgroundResource(R.drawable.toggle_unselected);
+            btnIncome.setTextColor(getResources().getColor(android.R.color.black));
         });
 
         loadPieChart();
