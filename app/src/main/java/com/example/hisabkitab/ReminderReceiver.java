@@ -28,7 +28,7 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.drawable.icon) // change icon
+                        .setSmallIcon(R.drawable.ic_launcher_foreground) // change icon
                         .setContentTitle("HisabKitab Reminder")
                         .setContentText("Don't forget to add today's transactions 💰")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
