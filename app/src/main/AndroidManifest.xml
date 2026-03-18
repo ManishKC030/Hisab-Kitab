@@ -29,5 +29,7 @@
         <activity android:name=".StatementActivity"/>
         <activity android:name=".AnalyticsActivity"/>
     </application>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
  <uses-permission android:name="android.permission.INTERNET"/>
+    <receiver android:name=".ReminderReceiver"/>
 </manifest>  

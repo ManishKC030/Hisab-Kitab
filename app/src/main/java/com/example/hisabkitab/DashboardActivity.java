@@ -71,6 +71,7 @@ public class DashboardActivity extends Activity {
 
         setUserName();
         loadAllTransactions();
+
         navBtnStatement.setOnClickListener(v ->
                 startActivity(new Intent(this, StatementActivity.class)));
         navBtnAnalytics.setOnClickListener(v ->
@@ -99,6 +100,42 @@ public class DashboardActivity extends Activity {
             setFilterUI(2);
             loadExpenseOnly();
         });
+        SharedPreferences prefs = getSharedPreferences("app", MODE_PRIVATE);
+        boolean isScheduled = prefs.getBoolean("notification_set", false);
+
+        if (!isScheduled) {
+            scheduleNotification();
+            prefs.edit().putBoolean("notification_set", true).apply();
+        }
+    }
+    private void scheduleNotification() {
+
+        Intent intent = new Intent(this, ReminderReceiver.class);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 20); // 8 PM
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        alarmManager.setRepeating(
+                AlarmManager.RTC_WAKEUP,
+                calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY,
+                pendingIntent
+        );
     }
 
     private void setUserName() {
