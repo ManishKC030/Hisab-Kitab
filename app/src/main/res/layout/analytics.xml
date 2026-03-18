@@ -64,7 +64,27 @@
 
 
                 <!-- UNDERLINE INDICATOR -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:orientation="horizontal">
 
+                    <View
+                        android:id="@+id/incomeIndicator"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:background="#2E7D32"/>
+
+                    <View
+                        android:id="@+id/expenseIndicator"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:background="#2E7D32"
+                        android:visibility="invisible"/>
+
+                </LinearLayout>
 
                 <!-- PIE CHART -->
 
