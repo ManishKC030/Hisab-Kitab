@@ -66,23 +66,17 @@ public class AnalyticsActivity extends AppCompatActivity {
             showIncome = true;
             loadPieChart();
 
-            // UI change
-            btnIncome.setBackgroundResource(R.drawable.toggle_selected);
-            btnIncome.setTextColor(getResources().getColor(android.R.color.white));
-
-            btnExpense.setBackgroundResource(R.drawable.toggle_unselected);
-            btnExpense.setTextColor(getResources().getColor(android.R.color.black));
+            incomeIndicator.setVisibility(View.VISIBLE);
+            expenseIndicator.setVisibility(View.INVISIBLE);
         });
+
         btnExpense.setOnClickListener(v -> {
 
             showIncome = false;
             loadPieChart();
-            // UI change
-            btnExpense.setBackgroundResource(R.drawable.toggle_selected);
-            btnExpense.setTextColor(getResources().getColor(android.R.color.white));
 
-            btnIncome.setBackgroundResource(R.drawable.toggle_unselected);
-            btnIncome.setTextColor(getResources().getColor(android.R.color.black));
+            incomeIndicator.setVisibility(View.INVISIBLE);
+            expenseIndicator.setVisibility(View.VISIBLE);
         });
         loadPieChart();
         loadBarChart();
