@@ -2,6 +2,7 @@ package com.example.hisabkitab;
 
 import android.app.*;
 import android.content.*;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.*;
@@ -10,7 +11,10 @@ import android.graphics.Color;
 import android.view.ViewGroup;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,7 +24,7 @@ import java.util.*;
 
 public class DashboardActivity extends AppCompatActivity {
 
-    LinearLayout navBtnAnalytics, navBtnStatement, navBtnAccount, transactionContainer;
+    LinearLayout navBtnHome, navBtnAnalytics, navBtnStatement, navBtnAccount, transactionContainer;
 
     Button btnAddIncome, btnAddExpense;
     Button btnFilterAll, btnFilterIncome, btnFilterExpense;
@@ -52,10 +56,16 @@ public class DashboardActivity extends AppCompatActivity {
         currentUserUid = currentUser.getUid();
 
         // Bind UI
+        navBtnHome = findViewById(R.id.navBtnHome);
         navBtnAnalytics = findViewById(R.id.navBtnAnalytics);
         navBtnStatement = findViewById(R.id.navBtnStatement);
         navBtnAccount = findViewById(R.id.navBtnAccount);
         transactionContainer = findViewById(R.id.transactionContainer);
+
+        // Set active tab color
+        int activeColor = ContextCompat.getColor(this, R.color.colorPrimary);
+        ((ImageView)findViewById(R.id.navIconHome)).setColorFilter(activeColor);
+        ((TextView)findViewById(R.id.navTextHome)).setTextColor(activeColor);
 
         btnAddIncome = findViewById(R.id.btnAddIncome);
         btnAddExpense = findViewById(R.id.btnAddExpense);
@@ -78,16 +88,15 @@ public class DashboardActivity extends AppCompatActivity {
         setUserName();
 
         // 🔔 NOTIFICATION SETUP
-        SharedPreferences prefs = getSharedPreferences("app", MODE_PRIVATE);
-        boolean isScheduled = prefs.getBoolean("notification_set", false);
-        if (!isScheduled) {
-            scheduleDailyNotification();
-            prefs.edit().putBoolean("notification_set", true).apply();
-        }
+        checkNotificationPermission();
 
         loadAllTransactions();
 
         // Navigation
+        navBtnHome.setOnClickListener(v -> {
+            // Already here
+        });
+
         navBtnStatement.setOnClickListener(v ->
                 startActivity(new Intent(this, StatementActivity.class)));
 
@@ -121,26 +130,92 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
+    private void checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS) 
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, 
+                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
+            } else {
+                scheduleInitialNotification();
+            }
+        } else {
+            scheduleInitialNotification();
+        }
+    }
+
+    private void scheduleInitialNotification() {
+        SharedPreferences prefs = getSharedPreferences("app", MODE_PRIVATE);
+        boolean isScheduled = prefs.getBoolean("notification_set", false);
+        if (!isScheduled) {
+            scheduleNotificationNow();
+            prefs.edit().putBoolean("notification_set", true).apply();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 101) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                scheduleInitialNotification();
+            }
+        }
+    }
+
     // ==================== NOTIFICATION ====================
-    private void scheduleDailyNotification() {
+//    private void scheduleDailyNotification() {
+//        Intent intent = new Intent(this, ReminderReceiver.class);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+//                this, 0, intent,
+//                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+//        );
+//
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(Calendar.HOUR_OF_DAY, 20); // 8 PM
+//        calendar.set(Calendar.MINUTE, 0);
+//        calendar.set(Calendar.SECOND, 0);
+//
+//        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
+//            calendar.add(Calendar.DAY_OF_MONTH, 1);
+//        }
+//
+//        // Use setExactAndAllowWhileIdle for precise daily alarm
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            alarmManager.setExactAndAllowWhileIdle(
+//                    AlarmManager.RTC_WAKEUP,
+//                    calendar.getTimeInMillis(),
+//                    pendingIntent
+//            );
+//        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            alarmManager.setExact(
+//                    AlarmManager.RTC_WAKEUP,
+//                    calendar.getTimeInMillis(),
+//                    pendingIntent
+//            );
+//        } else {
+//            alarmManager.set(
+//                    AlarmManager.RTC_WAKEUP,
+//                    calendar.getTimeInMillis(),
+//                    pendingIntent
+//            );
+//        }
+//    }
+
+//Sechuling notification after 10 seconds
+    private void scheduleNotificationNow() {
         Intent intent = new Intent(this, ReminderReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR_OF_DAY, 20); // 8 PM
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
+        calendar.add(Calendar.SECOND, 10); // trigger after 10 seconds
 
-        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        // Use setExactAndAllowWhileIdle for precise daily alarm
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
@@ -161,7 +236,6 @@ public class DashboardActivity extends AppCompatActivity {
             );
         }
     }
-
     // ==================== USER NAME ====================
     private void setUserName() {
         if (currentUser.getDisplayName() != null && !currentUser.getDisplayName().isEmpty()) {
@@ -175,12 +249,17 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void setFilterUI(int selected) {
-        btnFilterAll.setBackgroundResource(
-                selected == 0 ? R.drawable.filter_selected : R.drawable.filter_unselected);
-        btnFilterIncome.setBackgroundResource(
-                selected == 1 ? R.drawable.filter_selected : R.drawable.filter_unselected);
-        btnFilterExpense.setBackgroundResource(
-                selected == 2 ? R.drawable.filter_selected : R.drawable.filter_unselected);
+        int white = Color.WHITE;
+        int darkGray = Color.DKGRAY;
+
+        btnFilterAll.setBackgroundResource(selected == 0 ? R.drawable.filter_selected : R.drawable.filter_unselected);
+        btnFilterAll.setTextColor(selected == 0 ? white : darkGray);
+
+        btnFilterIncome.setBackgroundResource(selected == 1 ? R.drawable.filter_selected : R.drawable.filter_unselected);
+        btnFilterIncome.setTextColor(selected == 1 ? white : darkGray);
+
+        btnFilterExpense.setBackgroundResource(selected == 2 ? R.drawable.filter_selected : R.drawable.filter_unselected);
+        btnFilterExpense.setTextColor(selected == 2 ? white : darkGray);
     }
 
     // ==================== LOAD TRANSACTIONS ====================
@@ -230,7 +309,7 @@ public class DashboardActivity extends AppCompatActivity {
         sortTransactions(allTransactions);
 
         for (TransactionItem tx : allTransactions) {
-            addTransactionView(tx.title, tx.amount, tx.date, tx.isIncome);
+            addTransactionView(tx.title, tx.amount, tx.date, tx.category, tx.isIncome);
         }
 
         double balance = totalIncome - totalExpense;
@@ -258,9 +337,10 @@ public class DashboardActivity extends AppCompatActivity {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                int synced = cursor.getInt(cursor.getColumnIndexOrThrow("synced"));
                 String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
 
-                list.add(new TransactionItem(title, amount, date, true, 1, category));
+                list.add(new TransactionItem(title, amount, date, true, synced, category));
             }
             cursor.close();
         }
@@ -268,7 +348,7 @@ public class DashboardActivity extends AppCompatActivity {
         sortTransactions(list);
 
         for (TransactionItem tx : list) {
-            addTransactionView(tx.title, tx.amount, tx.date, true);
+            addTransactionView(tx.title, tx.amount, tx.date, tx.category, true);
         }
     }
 
@@ -282,9 +362,10 @@ public class DashboardActivity extends AppCompatActivity {
                 String title = cursor.getString(cursor.getColumnIndexOrThrow("title"));
                 double amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                int synced = cursor.getInt(cursor.getColumnIndexOrThrow("synced"));
                 String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
 
-                list.add(new TransactionItem(title, amount, date, false, 1, category));
+                list.add(new TransactionItem(title, amount, date, false, synced, category));
             }
             cursor.close();
         }
@@ -292,63 +373,46 @@ public class DashboardActivity extends AppCompatActivity {
         sortTransactions(list);
 
         for (TransactionItem tx : list) {
-            addTransactionView(tx.title, tx.amount, tx.date, false);
+            addTransactionView(tx.title, tx.amount, tx.date, tx.category, false);
         }
     }
 
     private void sortTransactions(List<TransactionItem> list) {
         Collections.sort(list, (a, b) -> {
             try {
-                Date d1 = sdf.parse(a.date);
-                Date d2 = sdf.parse(b.date);
-                return d2.compareTo(d1);
+                SimpleDateFormat parser = new SimpleDateFormat("d/M/yyyy", Locale.US);
+                Date d1 = parser.parse(a.date);
+                Date d2 = parser.parse(b.date);
+                if (d1 == null || d2 == null) return 0;
+                return d2.compareTo(d1); // Latest first
             } catch (Exception e) {
+                e.printStackTrace();
                 return 0;
             }
         });
     }
 
-    private void addTransactionView(String title, double amount, String date, boolean isIncome) {
-        LinearLayout row = new LinearLayout(this);
-        row.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        row.setOrientation(LinearLayout.VERTICAL);
-        row.setPadding(0, 24, 0, 24);
+    private void addTransactionView(String title, double amount, String date, String category, boolean isIncome) {
+        View view = getLayoutInflater().inflate(R.layout.item_transaction, transactionContainer, false);
 
-        LinearLayout rowTop = new LinearLayout(this);
-        rowTop.setOrientation(LinearLayout.HORIZONTAL);
+        TextView tvTitle = view.findViewById(R.id.txtTitle);
+        TextView tvCategory = view.findViewById(R.id.txtCategory);
+        TextView tvDate = view.findViewById(R.id.txtDate);
+        TextView tvAmount = view.findViewById(R.id.txtAmount);
 
-        TextView tvTitle = new TextView(this);
-        tvTitle.setLayoutParams(new LinearLayout.LayoutParams(
-                0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         tvTitle.setText(title);
-        tvTitle.setTextSize(18);
-        tvTitle.setTextColor(Color.BLACK);
+        tvCategory.setText(category); 
+        tvDate.setText(date);
+        
+        if (isIncome) {
+            tvAmount.setText("+ Rs " + amount);
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.income_green));
+        } else {
+            tvAmount.setText("- Rs " + amount);
+            tvAmount.setTextColor(ContextCompat.getColor(this, R.color.expense_red));
+        }
 
-        TextView tvAmount = new TextView(this);
-        tvAmount.setTextSize(18);
-        tvAmount.setTextColor(isIncome ? Color.parseColor("#2E7D32") : Color.parseColor("#E53935"));
-        tvAmount.setText((isIncome ? "+ Rs " : "- Rs ") + amount);
-
-        rowTop.addView(tvTitle);
-        rowTop.addView(tvAmount);
-
-        TextView tvDate = new TextView(this);
-        tvDate.setTextSize(15);
-        tvDate.setTextColor(Color.DKGRAY);
-        tvDate.setText("Date: " + date);
-
-        row.addView(rowTop);
-        row.addView(tvDate);
-
-        transactionContainer.addView(row);
-
-        View divider = new View(this);
-        divider.setLayoutParams(new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, 1));
-        divider.setBackgroundColor(Color.parseColor("#D3D3D3"));
-        transactionContainer.addView(divider);
+        transactionContainer.addView(view);
     }
 
     @Override

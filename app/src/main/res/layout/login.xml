@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A7D0E1"
+    android:background="@color/backgroundColor"
     android:gravity="center"
     android:orientation="vertical"
     android:weightSum="4">
@@ -27,7 +27,7 @@
             android:layout_gravity="center"
             android:padding="8dp"
             android:text="Login"
-            android:textColor="#2652D9"
+            android:textColor="@color/colorPrimary"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Forgot password?"
-            android:textColor="#4A6CF7"
+            android:textColor="@color/colorPrimary"
             android:textSize="12sp" />
 
         <!-- CONTINUE BUTTON -->
@@ -129,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Sign up"
-                android:textColor="#4A6CF7"
+                android:textColor="@color/colorPrimary"
                 android:textStyle="bold" />
         </LinearLayout>
 

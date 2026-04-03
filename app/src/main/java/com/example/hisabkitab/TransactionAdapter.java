@@ -15,13 +15,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView title, category, amount;
+        TextView title, category, date, amount;
 
         public ViewHolder(View v){
             super(v);
 
             title = v.findViewById(R.id.txtTitle);
             category = v.findViewById(R.id.txtCategory);
+            date = v.findViewById(R.id.txtDate);
             amount = v.findViewById(R.id.txtAmount);
         }
     }
@@ -42,13 +43,16 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         holder.title.setText(t.title);
         holder.category.setText(t.category);
+        if (holder.date != null) {
+            holder.date.setText(t.date);
+        }
 
         if(t.isIncome){
             holder.amount.setText("+ Rs " + t.amount);
-            holder.amount.setTextColor(0xFF2ECC71);
+            holder.amount.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.getContext(), R.color.income_green));
         }else{
             holder.amount.setText("- Rs " + t.amount);
-            holder.amount.setTextColor(0xFFE74C3C);
+            holder.amount.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.getContext(), R.color.expense_red));
         }
     }
 

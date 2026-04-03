@@ -4,10 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="14dp"
-    android:background="@android:color/white">
+    android:padding="16dp"
+    android:layout_marginBottom="8dp"
+    android:elevation="2dp"
+    android:background="@drawable/transaction_item_background">
 
-    <!-- Left Side (Title + Category) -->
+    <!-- Left Side (Title + Category + Date) -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -21,16 +23,38 @@
             android:text="Transaction Title"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#000000"/>
+            android:textColor="@color/textPrimary"/>
 
-        <TextView
-            android:id="@+id/txtCategory"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Category"
-            android:textSize="13sp"
-            android:textColor="#777777"
-            android:layout_marginTop="3dp"/>
+            android:orientation="horizontal"
+            android:layout_marginTop="3dp">
+
+            <TextView
+                android:id="@+id/txtCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Category"
+                android:textSize="12sp"
+                android:textColor="@color/textSecondary"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" • "
+                android:textSize="12sp"
+                android:textColor="@color/textSecondary"/>
+
+            <TextView
+                android:id="@+id/txtDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:textSize="12sp"
+                android:textColor="@color/textSecondary"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -42,6 +66,6 @@
         android:text="+ Rs 500"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="#2ECC71"/>
+        android:textColor="@color/income_green"/>
 
 </LinearLayout>

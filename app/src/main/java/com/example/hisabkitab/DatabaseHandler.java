@@ -174,7 +174,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public Cursor getExpenses(String userUid) {
-
+        if (userUid == null) return null;
         SQLiteDatabase db = this.getReadableDatabase();
 
         return db.rawQuery(
@@ -234,7 +234,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public Cursor getIncome(String userUid) {
-
+        if (userUid == null) return null;
         SQLiteDatabase db = this.getReadableDatabase();
 
         return db.rawQuery(
