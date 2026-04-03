@@ -121,13 +121,56 @@ public class AddExpenseActivity extends AppCompatActivity {
         String description = edtDescription.getText().toString().trim();
         String date = edtDate.getText().toString().trim();
 
-        if (amountStr.isEmpty() || title.isEmpty() || date.isEmpty()) {
-            Toast.makeText(this, "Please fill required fields", Toast.LENGTH_SHORT).show();
+        // 1️⃣ Amount Validation
+        if (amountStr.isEmpty()) {
+            edtAmount.setError("Amount is required");
+            edtAmount.requestFocus();
             return;
         }
 
+        double amount;
+        try {
+            amount = Double.parseDouble(amountStr);
+            if (amount <= 0) {
+                edtAmount.setError("Enter valid amount");
+                edtAmount.requestFocus();
+                return;
+            }
+        } catch (Exception e) {
+            edtAmount.setError("Invalid number");
+            edtAmount.requestFocus();
+            return;
+        }
+
+        // 2️⃣ Title Validation
+        if (title.isEmpty()) {
+            edtTitle.setError("Title is required");
+            edtTitle.requestFocus();
+            return;
+        }
+
+        if (title.length() < 3) {
+            edtTitle.setError("Title too short");
+            edtTitle.requestFocus();
+            return;
+        }
+
+        // 3️⃣ Date Validation
+        if (date.isEmpty()) {
+            edtDate.setError("Select date");
+            edtDate.requestFocus();
+            return;
+        }
+
+        // 4️⃣ Category Validation
         if (selectedCategory.equals("Other")) {
             selectedCategory = edtNewCategory.getText().toString().trim();
+
+            if (selectedCategory.isEmpty()) {
+                edtNewCategory.setError("Enter category name");
+                edtNewCategory.requestFocus();
+                return;
+            }
         }
 
         if (selectedCategory.isEmpty()) {
@@ -135,15 +178,22 @@ public class AddExpenseActivity extends AppCompatActivity {
             return;
         }
 
-        double amount = Double.parseDouble(amountStr);
-
-        String userUid = "offline_user";
-
-        if (auth.getCurrentUser() != null) {
-            userUid = auth.getCurrentUser().getUid();
+        // 5️⃣ Description (Optional but limited)
+        if (description.length() > 100) {
+            edtDescription.setError("Max 100 characters");
+            edtDescription.requestFocus();
+            return;
         }
 
-        // 1️⃣ ALWAYS SAVE LOCALLY FIRST
+        // 6️⃣ User Check
+        if (auth.getCurrentUser() == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userUid = auth.getCurrentUser().getUid();
+
+        // 7️⃣ Save locally (Offline-first)
         long localId = db.insertExpense(
                 "",
                 userUid,
@@ -152,14 +202,18 @@ public class AddExpenseActivity extends AppCompatActivity {
                 selectedCategory,
                 description,
                 date,
-                0
+                0 // not synced
         );
+
+        if (localId == -1) {
+            Toast.makeText(this, "Error saving locally", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         Toast.makeText(this, "Expense saved locally", Toast.LENGTH_SHORT).show();
 
-        // 2️⃣ TRY SYNC IF INTERNET EXISTS
+        // 8️⃣ Sync
         SyncManager.syncData(this);
 
         finish();
-    }
     }
