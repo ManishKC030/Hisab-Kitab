@@ -50,7 +50,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "date TEXT," +
                 "synced INTEGER DEFAULT 0 )");
     }
+    public void insertSampleData() {
+        String[][] sampleTransactions = {
+                // {date, title, category, type, amount}
+                {"2026-01-02", "Salary", "Income", "Income", "50000"},
+                {"2026-01-03", "Food", "Food", "Expense", "450"},
+                {"2026-01-03", "Bus fare", "Transport", "Expense", "300"},
+                {"2026-01-04", "Electricity Bill", "Utilities", "Expense", "1200"},
+                {"2026-01-05", "Freelance Project", "Freelance", "Income", "12000"},
+                {"2026-01-06", "Shopping", "Shopping", "Expense", "2500"},
+                {"2026-01-07", "Movie Night", "Entertainment", "Expense", "1000"},
+                {"2026-01-10", "Gift from Friend", "Gift", "Income", "5000"},
+                {"2026-01-12", "Lunch", "Food", "Expense", "600"},
+                {"2026-01-15", "Bus fare", "Transport", "Expense", "350"}
+                // ...add more entries for Feb, Mar, Apr
+        };
 
+        for (String[] tx : sampleTransactions) {
+            ContentValues values = new ContentValues();
+            values.put("date", tx[0]);
+            values.put("title", tx[1]);
+            values.put("category", tx[2]);
+            values.put("type", tx[3]);
+            values.put("amount", Double.parseDouble(tx[4]));
+            values.put("synced", 1); // default synced
+
+            SQLiteDatabase db = this.getWritableDatabase();
+            db.insert("transactions", null, values);
+        }
+    }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -142,6 +170,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void deleteUser(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("users", "email=?", new String[]{email});
+        db.close();
+    }
+
+    public void clearUserData(String userUid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("expenses", "user_uid=?", new String[]{userUid});
+        db.delete("income", "user_uid=?", new String[]{userUid});
+        db.delete("users", "firebase_uid=?", new String[]{userUid});
         db.close();
     }
 

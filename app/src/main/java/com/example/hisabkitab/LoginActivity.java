@@ -1,6 +1,6 @@
 package com.example.hisabkitab;
 
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.widget.*;
@@ -12,7 +12,7 @@ import android.content.Context;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends AppCompatActivity {
 
     EditText edtEmail, edtPassword;
     Button btnLogin;
@@ -38,7 +38,7 @@ public class LoginActivity extends Activity {
         txtGoToRegister = findViewById(R.id.txtGoToRegister);
         txtForgotPassword = findViewById(R.id.txtForgotPassword);
 
-        if (sessionManager.isLoggedIn()) {
+        if (sessionManager.isLoggedIn() && auth.getCurrentUser() != null) {
             startActivity(new Intent(this, DashboardActivity.class));
             finish();
         }

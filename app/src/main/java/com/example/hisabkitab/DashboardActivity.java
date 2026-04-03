@@ -49,6 +49,8 @@ public class DashboardActivity extends AppCompatActivity {
         currentUser = mAuth.getCurrentUser();
 
         if (currentUser == null) {
+            new SessionManager(this).clearSession();
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;
         }
@@ -81,6 +83,16 @@ public class DashboardActivity extends AppCompatActivity {
         tvSyncStatus = findViewById(R.id.tvSyncStatus);
 
         db = new DatabaseHandler(this);
+
+
+        // Only insert sample data once
+        SharedPreferences prefs = getSharedPreferences("app", MODE_PRIVATE);
+        boolean dataInserted = prefs.getBoolean("sample_data_inserted", false);
+
+        if (!dataInserted) {
+            db.insertSampleData();
+            prefs.edit().putBoolean("sample_data_inserted", true).apply();
+        }
 
         // Sync
         SyncManager.syncData(this);

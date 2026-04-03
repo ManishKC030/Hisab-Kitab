@@ -1,6 +1,6 @@
 package com.example.hisabkitab;
 
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.widget.*;
@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends AppCompatActivity {
 
     TextView txtGoToLogin;
     EditText edtName, edtEmail, edtPassword;

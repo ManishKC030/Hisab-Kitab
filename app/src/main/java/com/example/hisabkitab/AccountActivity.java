@@ -87,6 +87,7 @@ public class AccountActivity extends AppCompatActivity {
     private void logoutUser() {
         // No internet required
         mAuth.signOut();
+        new SessionManager(this).clearSession();
         Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(AccountActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -123,20 +124,23 @@ public class AccountActivity extends AppCompatActivity {
                     user.reauthenticate(EmailAuthProvider.getCredential(email, password))
                             .addOnSuccessListener(aVoid -> {
 
-                                // Delete Firestore data
+                                String uid = user.getUid();
+
+                                // 1. First, delete user profile from Firestore
                                 firestore.collection("users")
-                                        .document(user.getUid())
+                                        .document(uid)
                                         .delete()
                                         .addOnSuccessListener(aVoid1 -> {
 
-                                            // Delete Firebase user
+                                            // 2. Then, delete the Firebase Auth user
                                             user.delete()
                                                     .addOnSuccessListener(aVoid2 -> {
 
-                                                        // Delete local SQLite user
-                                                        dbHandler.deleteUser(email);
+                                                        // 3. Finally, clear ALL local user data (SQLite)
+                                                        dbHandler.clearUserData(uid);
+                                                        new SessionManager(this).clearSession();
 
-                                                        Toast.makeText(this, "Account deleted successfully!", Toast.LENGTH_LONG).show();
+                                                        Toast.makeText(this, "Account and all data deleted successfully!", Toast.LENGTH_LONG).show();
 
                                                         // Redirect to Login
                                                         Intent intent = new Intent(AccountActivity.this, LoginActivity.class);
@@ -145,11 +149,14 @@ public class AccountActivity extends AppCompatActivity {
 
                                                     })
                                                     .addOnFailureListener(e ->
-                                                            Toast.makeText(this, "Failed to delete user: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                                                            Toast.makeText(this, "Auth deletion failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
 
                                         })
-                                        .addOnFailureListener(e ->
-                                                Toast.makeText(this, "Failed to delete Firestore data: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                                        .addOnFailureListener(e -> {
+                                            // Handle "Missing or insufficient permissions"
+                                            Toast.makeText(this, "Firestore Permission Denied: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                            android.util.Log.e("AccountActivity", "Firestore Error: ", e);
+                                        });
 
                             })
                             .addOnFailureListener(e ->
