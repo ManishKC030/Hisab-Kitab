@@ -9,6 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Calendar;
 
 public class AddIncomeActivity extends AppCompatActivity {
@@ -18,6 +23,7 @@ public class AddIncomeActivity extends AppCompatActivity {
     GridLayout gridCategory;
 
     String selectedCategory = "";
+    private String currentAmount = "";
 
     DatabaseHandler db;
     FirebaseAuth auth;
@@ -38,18 +44,22 @@ public class AddIncomeActivity extends AppCompatActivity {
         btnAddIncome = findViewById(R.id.btnAddIncome);
         gridCategory = findViewById(R.id.gridIncomeCategory);
 
+        edtDate.setFocusable(false); // prevent manual typing
+
         setupDatePicker();
         setupCategorySelection();
+        setupCurrencyFormatting();
+        setupRealtimeValidation();
 
         btnAddIncome.setOnClickListener(v -> saveIncome());
     }
 
-    // DATE PICKER
+    // 📅 Date Picker (no future)
     private void setupDatePicker() {
         edtDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+            DatePickerDialog dialog = new DatePickerDialog(this,
                     (view, year, month, day) ->
                             edtDate.setText(day + "/" + (month + 1) + "/" + year),
                     calendar.get(Calendar.YEAR),
@@ -57,51 +67,174 @@ public class AddIncomeActivity extends AppCompatActivity {
                     calendar.get(Calendar.DAY_OF_MONTH)
             );
 
-            // 🚫 Disable future dates (tomorrow and beyond)
-            datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
-
-            datePickerDialog.show();
+            dialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+            dialog.show();
         });
     }
-    // CATEGORY SELECTOR
+
+    // 🧩 Category Selection
     private void setupCategorySelection() {
         for (int i = 0; i < gridCategory.getChildCount(); i++) {
             View view = gridCategory.getChildAt(i);
+
             if (view instanceof TextView) {
                 view.setOnClickListener(v -> {
+
                     for (int j = 0; j < gridCategory.getChildCount(); j++) {
                         gridCategory.getChildAt(j)
                                 .setBackgroundResource(R.drawable.bg_category_unselected);
                     }
+
                     v.setBackgroundResource(R.drawable.bg_category_selected);
+
                     selectedCategory = ((TextView) v).getText().toString();
-                    edtNewCategory.setVisibility(selectedCategory.equals("Other") ? View.VISIBLE : View.GONE);
+
+                    if (selectedCategory.equals("Other")) {
+                        edtNewCategory.setVisibility(View.VISIBLE);
+                    } else {
+                        edtNewCategory.setVisibility(View.GONE);
+                        edtNewCategory.setError(null);
+                    }
                 });
             }
         }
     }
 
-    // SAVE INCOME OFFLINE-FIRST
+    // 💰 Currency Formatting
+    private void setupCurrencyFormatting() {
+        edtAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (!s.toString().equals(currentAmount)) {
+
+                    edtAmount.removeTextChangedListener(this);
+
+                    String clean = s.toString().replaceAll("[Rs,.\\s]", "");
+
+                    if (!clean.isEmpty()) {
+                        double parsed = Double.parseDouble(clean);
+
+                        NumberFormat format = NumberFormat.getInstance(new Locale("en", "IN"));
+                        String formatted = "Rs " + format.format(parsed);
+
+                        currentAmount = formatted;
+                        edtAmount.setText(formatted);
+                        edtAmount.setSelection(formatted.length());
+                    }
+
+                    edtAmount.addTextChangedListener(this);
+                }
+            }
+
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+    }
+
+    // ⚡ Real-time Validation
+    private void setupRealtimeValidation() {
+
+        // Amount
+        edtAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                String value = s.toString().replaceAll("[Rs,.\\s]", "");
+
+                if (value.isEmpty()) {
+                    edtAmount.setError("Amount required");
+                } else {
+                    try {
+                        double val = Double.parseDouble(value);
+                        if (val <= 0) {
+                            edtAmount.setError("Invalid amount");
+                        } else {
+                            edtAmount.setError(null);
+                        }
+                    } catch (Exception e) {
+                        edtAmount.setError("Invalid input");
+                    }
+                }
+            }
+
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+
+        // Title
+        edtTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() < 3) {
+                    edtTitle.setError("Minimum 3 characters");
+                } else {
+                    edtTitle.setError(null);
+                }
+            }
+
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+
+        // Category "Other"
+        edtNewCategory.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (selectedCategory.equals("Other") && s.toString().trim().isEmpty()) {
+                    edtNewCategory.setError("Enter category");
+                } else {
+                    edtNewCategory.setError(null);
+                }
+            }
+
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+        });
+    }
+
+    // 💾 Save Income
     private void saveIncome() {
 
-        String amountStr = edtAmount.getText().toString().trim();
+        String amountStr = edtAmount.getText().toString().replaceAll("[Rs,.\\s]", "");
         String title = edtTitle.getText().toString().trim();
         String description = edtDescription.getText().toString().trim();
         String date = edtDate.getText().toString().trim();
 
-        if (amountStr.isEmpty() || title.isEmpty() || date.isEmpty()) {
-            Toast.makeText(this, "Please fill required fields", Toast.LENGTH_SHORT).show();
+        if (amountStr.isEmpty()) {
+            edtAmount.setError("Amount required");
             return;
         }
 
         double amount = Double.parseDouble(amountStr);
 
-        if (selectedCategory.equals("Other")) {
-            selectedCategory = edtNewCategory.getText().toString().trim();
+        if (title.isEmpty() || title.length() < 3) {
+            edtTitle.setError("Enter valid title");
+            return;
         }
 
-        if (selectedCategory.isEmpty()) {
-            Toast.makeText(this, "Please select category", Toast.LENGTH_SHORT).show();
+        if (date.isEmpty()) {
+            edtDate.setError("Select date");
+            return;
+        }
+
+        String finalCategory = selectedCategory;
+
+        if (selectedCategory.equals("Other")) {
+            finalCategory = edtNewCategory.getText().toString().trim();
+
+            if (finalCategory.isEmpty()) {
+                edtNewCategory.setError("Enter category");
+                return;
+            }
+        }
+
+        if (finalCategory.isEmpty()) {
+            Toast.makeText(this, "Select category", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (description.length() > 100) {
+            edtDescription.setError("Max 100 characters");
             return;
         }
 
@@ -112,26 +245,24 @@ public class AddIncomeActivity extends AppCompatActivity {
 
         String userUid = auth.getCurrentUser().getUid();
 
-        // 1️⃣ Save locally first
         long localId = db.insertIncome(
                 "",
                 userUid,
                 title,
                 amount,
-                selectedCategory,
+                finalCategory,
                 description,
                 date,
-                0 // 0 = not synced
+                0
         );
 
         if (localId == -1) {
-            Toast.makeText(this, "Error saving locally", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Error saving", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Toast.makeText(this, "Income saved locally", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Income saved", Toast.LENGTH_SHORT).show();
 
-        // 2️⃣ Sync automatically if internet is available
         SyncManager.syncData(this);
 
         finish();
