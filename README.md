@@ -29,6 +29,7 @@
 - Responsive UI with scrollable layouts.
 - Color-coded charts for better readability.
 - Elegant toggle indicators for Income/Expense.
+- Export reports as **PDF or Excel**.
 
 ### 📊 Analytics & Algorithms
 - **Linear Regression** → predicts future expenses based on trends.
@@ -41,21 +42,10 @@
 - Implement **Machine Learning models** for personalized budgeting.
 - Add **predictive AI insights** for saving tips.
 - Visualize **income vs. expense ratio** with interactive charts.
-- Export reports as **PDF or Excel**.
 - Push **notifications** for overspending alerts.
 - Multi-currency support for international users.
 
----
-
-## Screenshots
-
-![Pie Chart Example](screenshots/pie_chart.png)
-![Bar Chart Example](screenshots/bar_chart.png)
-![Prediction & Insights](screenshots/prediction_insights.png)
-
----
-
-## Installation
+### Installation
 
 1. Clone this repository:
    ```bash
