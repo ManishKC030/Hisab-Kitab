@@ -36,6 +36,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return new ViewHolder(view);
     }
 
+    private String formatRupee(double amount) {
+        java.text.NumberFormat formatter = java.text.NumberFormat.getCurrencyInstance(new java.util.Locale("en", "IN"));
+        String result = formatter.format(amount);
+        return result.replace("₹", "Rs ");
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder,int position){
 
@@ -48,10 +54,10 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
 
         if(t.isIncome){
-            holder.amount.setText("+ Rs " + t.amount);
+            holder.amount.setText("+ " + formatRupee(t.amount));
             holder.amount.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.getContext(), R.color.income_green));
         }else{
-            holder.amount.setText("- Rs " + t.amount);
+            holder.amount.setText("- " + formatRupee(t.amount));
             holder.amount.setTextColor(androidx.core.content.ContextCompat.getColor(holder.itemView.getContext(), R.color.expense_red));
         }
     }

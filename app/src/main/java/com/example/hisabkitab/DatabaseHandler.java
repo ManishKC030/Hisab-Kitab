@@ -5,6 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
 import android.database.Cursor;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -50,33 +53,66 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "date TEXT," +
                 "synced INTEGER DEFAULT 0 )");
     }
-    public void insertSampleData() {
-        String[][] sampleTransactions = {
-                // {date, title, category, type, amount}
-                {"2026-01-02", "Salary", "Income", "Income", "50000"},
-                {"2026-01-03", "Food", "Food", "Expense", "450"},
-                {"2026-01-03", "Bus fare", "Transport", "Expense", "300"},
-                {"2026-01-04", "Electricity Bill", "Utilities", "Expense", "1200"},
-                {"2026-01-05", "Freelance Project", "Freelance", "Income", "12000"},
-                {"2026-01-06", "Shopping", "Shopping", "Expense", "2500"},
-                {"2026-01-07", "Movie Night", "Entertainment", "Expense", "1000"},
-                {"2026-01-10", "Gift from Friend", "Gift", "Income", "5000"},
-                {"2026-01-12", "Lunch", "Food", "Expense", "600"},
-                {"2026-01-15", "Bus fare", "Transport", "Expense", "350"}
-                // ...add more entries for Feb, Mar, Apr
+    public void insertSampleData(String userUid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy", Locale.US);
+        
+        // {DaysOffset, Title, Category, Type, Amount}
+        Object[][] sampleData = {
+                // --- MONTH 0 (Current) ---
+                {0, "Salary - Month 0", "Salary", "Income", 85000.0},
+                {-2, "Grocery Shopping", "Food", "Expense", 4500.0},
+                {-5, "Electricity Bill", "Bills", "Expense", 2200.0},
+                {-10, "Internet Bill", "Bills", "Expense", 1600.0},
+                {-15, "Freelance Gig", "Freelance", "Income", 12000.0},
+                
+                // --- MONTH 1 ---
+                {-32, "Salary - Month 1", "Salary", "Income", 85000.0},
+                {-35, "House Rent", "Bills", "Expense", 20000.0},
+                {-40, "Fuel", "Transport", "Expense", 3500.0},
+                {-45, "Dining Out", "Food", "Expense", 2800.0},
+                {-50, "Online Course", "Other", "Expense", 5000.0},
+
+                // --- MONTH 2 ---
+                {-62, "Salary - Month 2", "Salary", "Income", 85000.0},
+                {-65, "Shopping", "Shopping", "Expense", 7000.0},
+                {-70, "Water Bill", "Bills", "Expense", 600.0},
+                {-75, "Medical Checkup", "Health", "Expense", 1500.0},
+                {-80, "Investment Dividend", "Investment", "Income", 3000.0},
+
+                // --- MONTH 3 ---
+                {-92, "Salary - Month 3", "Salary", "Income", 85000.0},
+                {-95, "Insurance Premium", "Bills", "Expense", 12000.0},
+                {-100, "New Shoes", "Shopping", "Expense", 4500.0},
+                {-110, "Gift for Friend", "Gift", "Expense", 2000.0},
+
+                // --- MONTH 4 ---
+                {-122, "Salary - Month 4", "Salary", "Income", 82000.0},
+                {-125, "Car Repair", "Transport", "Expense", 15000.0},
+                {-130, "Grocery", "Food", "Expense", 5000.0},
+
+                // --- MONTH 5 ---
+                {-152, "Salary - Month 5", "Salary", "Income", 82000.0},
+                {-155, "Vacation Trip", "Other", "Expense", 30000.0},
+                {-160, "Restaurant", "Food", "Expense", 4000.0}
         };
 
-        for (String[] tx : sampleTransactions) {
-            ContentValues values = new ContentValues();
-            values.put("date", tx[0]);
-            values.put("title", tx[1]);
-            values.put("category", tx[2]);
-            values.put("type", tx[3]);
-            values.put("amount", Double.parseDouble(tx[4]));
-            values.put("synced", 1); // default synced
+        for (Object[] item : sampleData) {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_YEAR, (int) item[0]);
+            String dateStr = sdf.format(cal.getTime());
 
-            SQLiteDatabase db = this.getWritableDatabase();
-            db.insert("transactions", null, values);
+            ContentValues values = new ContentValues();
+            values.put("user_uid", userUid);
+            values.put("date", dateStr);
+            values.put("title", (String) item[1]);
+            values.put("category", (String) item[2]);
+            values.put("amount", (Double) item[4]);
+            values.put("description", "Expanded realistic sample data.");
+            values.put("synced", 1);
+
+            String table = ((String) item[3]).equalsIgnoreCase("Income") ? "income" : "expenses";
+            db.insert(table, null, values);
         }
     }
     @Override

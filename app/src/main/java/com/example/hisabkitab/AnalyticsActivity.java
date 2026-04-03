@@ -8,7 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.*;
-
+import android.graphics.Color;
+import java.text.SimpleDateFormat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -114,109 +115,124 @@ public class AnalyticsActivity extends AppCompatActivity {
         generateInsights();
     }
 
-    void loadPieChart(){
+    void loadPieChart() {
         if (userUid == null) return;
         Map<String, Float> categoryMap = new HashMap<>();
 
         Cursor cursor;
-
-        if(showIncome)
+        if (showIncome)
             cursor = db.getIncome(userUid);
         else
             cursor = db.getExpenses(userUid);
 
         if (cursor == null) return;
 
-        while(cursor.moveToNext()){
-
+        while (cursor.moveToNext()) {
             String category = cursor.getString(cursor.getColumnIndexOrThrow("category"));
             float amount = cursor.getFloat(cursor.getColumnIndexOrThrow("amount"));
 
-            if(categoryMap.containsKey(category))
-                categoryMap.put(category, categoryMap.get(category) + amount);
-            else
-                categoryMap.put(category, amount);
+            categoryMap.put(category, categoryMap.getOrDefault(category, 0f) + amount);
         }
+        cursor.close();
 
         List<PieEntry> entries = new ArrayList<>();
-
-        for(String key : categoryMap.keySet())
-            entries.add(new PieEntry(categoryMap.get(key), key));
+        for (Map.Entry<String, Float> entry : categoryMap.entrySet()) {
+            entries.add(new PieEntry(entry.getValue(), entry.getKey()));
+        }
 
         PieDataSet dataSet = new PieDataSet(entries, "");
-
-        dataSet.setColors(
-                androidx.core.content.ContextCompat.getColor(this, R.color.income_green),
-                androidx.core.content.ContextCompat.getColor(this, R.color.balance_blue),
-                0xFFF1C40F, // Gold
-                0xFFE67E22, // Orange
-                androidx.core.content.ContextCompat.getColor(this, R.color.expense_red)
-        );
+        
+        // Dynamic colors for better visualization
+        int[] colors = {
+                0xFF2ECC71, // Emerald
+                0xFF3498DB, // Peter River
+                0xFF9B59B6, // Amethyst
+                0xFFF1C40F, // Sun Flower
+                0xFFE67E22, // Carrot
+                0xFFE74C3C, // Alizarin
+                0xFF1ABC9C, // Turquoise
+                0xFF34495E  // Wet Asphalt
+        };
+        dataSet.setColors(colors);
+        dataSet.setValueTextColor(Color.WHITE);
+        dataSet.setValueTextSize(12f);
 
         PieData data = new PieData(dataSet);
-
         pieChart.setData(data);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setCenterText(showIncome ? "Income Distribution" : "Expense Distribution");
+        pieChart.animateY(1000);
         pieChart.invalidate();
     }
 
-    void loadBarChart(){
+    void loadBarChart() {
         if (userUid == null) return;
-        Map<String, Float> monthMap = new HashMap<>();
+        Map<String, Float> monthMap = new TreeMap<>((o1, o2) -> {
+            try {
+                SimpleDateFormat monthFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
+                return monthFormat.parse(o1).compareTo(monthFormat.parse(o2));
+            } catch (Exception e) {
+                return o1.compareTo(o2);
+            }
+        });
 
         Cursor cursor = db.getExpenses(userUid);
         if (cursor == null) return;
 
-        while(cursor.moveToNext()){
+        SimpleDateFormat inputFormat = new SimpleDateFormat("d/M/yyyy", Locale.US);
+        SimpleDateFormat monthFormat = new SimpleDateFormat("MMM yyyy", Locale.US);
 
-            String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-            float amount = cursor.getFloat(cursor.getColumnIndexOrThrow("amount"));
+        while (cursor.moveToNext()) {
+            try {
+                String dateStr = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                float amount = cursor.getFloat(cursor.getColumnIndexOrThrow("amount"));
+                
+                Date date = inputFormat.parse(dateStr);
+                String monthKey = monthFormat.format(date);
 
-            String month = date.substring(0,7);
-
-            if(monthMap.containsKey(month))
-                monthMap.put(month, monthMap.get(month)+amount);
-            else
-                monthMap.put(month, amount);
+                monthMap.put(monthKey, monthMap.getOrDefault(monthKey, 0f) + amount);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+        cursor.close();
 
         List<BarEntry> entries = new ArrayList<>();
-
         int index = 0;
-
-        for(String key : monthMap.keySet()){
-            entries.add(new BarEntry(index, monthMap.get(key)));
-            index++;
+        for (float val : monthMap.values()) {
+            entries.add(new BarEntry(index++, val));
         }
 
-        BarDataSet set = new BarDataSet(entries,"Monthly Expense");
-
+        BarDataSet set = new BarDataSet(entries, "Monthly Expenses (NPR)");
         set.setColor(androidx.core.content.ContextCompat.getColor(this, R.color.colorPrimary));
+        set.setValueTextSize(10f);
 
         BarData data = new BarData(set);
-
         barChart.setData(data);
+        barChart.getXAxis().setLabelCount(monthMap.size());
+        barChart.getDescription().setEnabled(false);
+        barChart.animateX(1000);
         barChart.invalidate();
     }
 
-    void calculatePrediction(){
+    void calculatePrediction() {
         if (userUid == null) return;
         Cursor cursor = db.getExpenses(userUid);
         if (cursor == null) return;
 
         Map<String, Float> monthMap = new HashMap<>();
+        SimpleDateFormat inputFormat = new SimpleDateFormat("d/M/yyyy", Locale.US);
+        SimpleDateFormat monthFormat = new SimpleDateFormat("M/yyyy", Locale.US);
 
-        while(cursor.moveToNext()){
+        while (cursor.moveToNext()) {
+            try {
+                String dateStr = cursor.getString(cursor.getColumnIndexOrThrow("date"));
+                float amount = cursor.getFloat(cursor.getColumnIndexOrThrow("amount"));
+                Date date = inputFormat.parse(dateStr);
+                String monthKey = monthFormat.format(date);
 
-            String date = cursor.getString(cursor.getColumnIndexOrThrow("date"));
-            float amount = cursor.getFloat(cursor.getColumnIndexOrThrow("amount"));
-
-            if (date.length() < 7) continue;
-            String month = date.substring(0,7);
-
-            if(monthMap.containsKey(month))
-                monthMap.put(month, monthMap.get(month)+amount);
-            else
-                monthMap.put(month, amount);
+                monthMap.put(monthKey, monthMap.getOrDefault(monthKey, 0f) + amount);
+            } catch (Exception e) { }
         }
         cursor.close();
 

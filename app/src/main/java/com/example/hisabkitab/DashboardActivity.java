@@ -87,11 +87,11 @@ public class DashboardActivity extends AppCompatActivity {
 
         // Only insert sample data once
         SharedPreferences prefs = getSharedPreferences("app", MODE_PRIVATE);
-        boolean dataInserted = prefs.getBoolean("sample_data_inserted", false);
+        boolean dataInserted = prefs.getBoolean("sample_data_inserted_v4", false); // Updated to v4
 
-        if (!dataInserted) {
-            db.insertSampleData();
-            prefs.edit().putBoolean("sample_data_inserted", true).apply();
+        if (!dataInserted && currentUserUid != null) {
+            db.insertSampleData(currentUserUid);
+            prefs.edit().putBoolean("sample_data_inserted_v4", true).apply();
         }
 
         // Sync
@@ -274,6 +274,14 @@ public class DashboardActivity extends AppCompatActivity {
         btnFilterExpense.setTextColor(selected == 2 ? white : darkGray);
     }
 
+    // ==================== FORMAT CURRENCY ====================
+    private String formatRupee(double amount) {
+        // Use Indian locale for Rs formatting
+        java.text.NumberFormat formatter = java.text.NumberFormat.getCurrencyInstance(new Locale("en", "IN"));
+        String result = formatter.format(amount);
+        return result.replace("₹", "Rs ");
+    }
+
     // ==================== LOAD TRANSACTIONS ====================
     private void loadAllTransactions() {
         transactionContainer.removeAllViews();
@@ -320,15 +328,18 @@ public class DashboardActivity extends AppCompatActivity {
 
         sortTransactions(allTransactions);
 
-        for (TransactionItem tx : allTransactions) {
+        // Limit dashboard to 7-8 latest transactions as requested
+        int showCount = Math.min(allTransactions.size(), 7);
+        for (int i = 0; i < showCount; i++) {
+            TransactionItem tx = allTransactions.get(i);
             addTransactionView(tx.title, tx.amount, tx.date, tx.category, tx.isIncome);
         }
 
         double balance = totalIncome - totalExpense;
 
-        tvIncome.setText("+ Rs " + totalIncome);
-        tvExpense.setText("- Rs " + totalExpense);
-        tvBalance.setText("Rs " + balance);
+        tvIncome.setText("+ " + formatRupee(totalIncome));
+        tvExpense.setText("- " + formatRupee(totalExpense));
+        tvBalance.setText(formatRupee(balance));
 
         if (hasUnsynced) {
             tvSyncStatus.setText("Not Synced");
@@ -417,10 +428,10 @@ public class DashboardActivity extends AppCompatActivity {
         tvDate.setText(date);
         
         if (isIncome) {
-            tvAmount.setText("+ Rs " + amount);
+            tvAmount.setText("+ " + formatRupee(amount));
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.income_green));
         } else {
-            tvAmount.setText("- Rs " + amount);
+            tvAmount.setText("- " + formatRupee(amount));
             tvAmount.setTextColor(ContextCompat.getColor(this, R.color.expense_red));
         }
 
