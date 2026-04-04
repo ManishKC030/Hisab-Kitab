@@ -58,6 +58,8 @@ public class StatementActivity extends AppCompatActivity {
     FirebaseUser currentUser;
     String userUid;
 
+    LinearLayout navBtnHome, navBtnAnalytics, navBtnStatement, navBtnAccount;
+
     boolean isSpinnerInitialized = false;
 
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -76,6 +78,32 @@ public class StatementActivity extends AppCompatActivity {
         }
 
         userUid = currentUser.getUid();
+
+        // Navigation Setup
+        navBtnHome = findViewById(R.id.navBtnHome);
+        navBtnAnalytics = findViewById(R.id.navBtnAnalytics);
+        navBtnStatement = findViewById(R.id.navBtnStatement);
+        navBtnAccount = findViewById(R.id.navBtnAccount);
+        // Highlight Statement tab
+        // Set active tab color
+        int activeColor = androidx.core.content.ContextCompat.getColor(this, R.color.colorPrimary);
+        ((ImageView)findViewById(R.id.navIconStatement)).setColorFilter(activeColor);
+        ((TextView)findViewById(R.id.navTextStatement)).setTextColor(activeColor);
+
+        // Navigation
+        navBtnStatement.setOnClickListener(v -> {
+            // Already here
+        });
+
+        navBtnAnalytics.setOnClickListener(v ->
+                startActivity(new Intent(this, AnalyticsActivity.class)));
+
+        navBtnHome.setOnClickListener(v ->
+                startActivity(new Intent(this, DashboardActivity.class)));
+
+        navBtnAccount.setOnClickListener(v ->
+                startActivity(new Intent(this, AccountActivity.class)));
+
 
         db = new DatabaseHandler(this);
 
