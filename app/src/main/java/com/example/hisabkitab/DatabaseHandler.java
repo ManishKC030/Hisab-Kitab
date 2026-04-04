@@ -5,6 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.content.ContentValues;
 import android.database.Cursor;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -50,7 +53,68 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "date TEXT," +
                 "synced INTEGER DEFAULT 0 )");
     }
+    public void insertSampleData(String userUid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy", Locale.US);
+        
+        // {DaysOffset, Title, Category, Type, Amount}
+        Object[][] sampleData = {
+                // --- MONTH 0 (Current) ---
+                {0, "Salary - Month 0", "Salary", "Income", 85000.0},
+                {-2, "Grocery Shopping", "Food", "Expense", 4500.0},
+                {-5, "Electricity Bill", "Bills", "Expense", 2200.0},
+                {-10, "Internet Bill", "Bills", "Expense", 1600.0},
+                {-15, "Freelance Gig", "Freelance", "Income", 12000.0},
+                
+                // --- MONTH 1 ---
+                {-32, "Salary - Month 1", "Salary", "Income", 85000.0},
+                {-35, "House Rent", "Bills", "Expense", 20000.0},
+                {-40, "Fuel", "Transport", "Expense", 3500.0},
+                {-45, "Dining Out", "Food", "Expense", 2800.0},
+                {-50, "Online Course", "Other", "Expense", 5000.0},
 
+                // --- MONTH 2 ---
+                {-62, "Salary - Month 2", "Salary", "Income", 85000.0},
+                {-65, "Shopping", "Shopping", "Expense", 7000.0},
+                {-70, "Water Bill", "Bills", "Expense", 600.0},
+                {-75, "Medical Checkup", "Health", "Expense", 1500.0},
+                {-80, "Investment Dividend", "Investment", "Income", 3000.0},
+
+                // --- MONTH 3 ---
+                {-92, "Salary - Month 3", "Salary", "Income", 85000.0},
+                {-95, "Insurance Premium", "Bills", "Expense", 12000.0},
+                {-100, "New Shoes", "Shopping", "Expense", 4500.0},
+                {-110, "Gift for Friend", "Gift", "Expense", 2000.0},
+
+                // --- MONTH 4 ---
+                {-122, "Salary - Month 4", "Salary", "Income", 82000.0},
+                {-125, "Car Repair", "Transport", "Expense", 15000.0},
+                {-130, "Grocery", "Food", "Expense", 5000.0},
+
+                // --- MONTH 5 ---
+                {-152, "Salary - Month 5", "Salary", "Income", 82000.0},
+                {-155, "Vacation Trip", "Other", "Expense", 30000.0},
+                {-160, "Restaurant", "Food", "Expense", 4000.0}
+        };
+
+        for (Object[] item : sampleData) {
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DAY_OF_YEAR, (int) item[0]);
+            String dateStr = sdf.format(cal.getTime());
+
+            ContentValues values = new ContentValues();
+            values.put("user_uid", userUid);
+            values.put("date", dateStr);
+            values.put("title", (String) item[1]);
+            values.put("category", (String) item[2]);
+            values.put("amount", (Double) item[4]);
+            values.put("description", "Expanded realistic sample data.");
+            values.put("synced", 1);
+
+            String table = ((String) item[3]).equalsIgnoreCase("Income") ? "income" : "expenses";
+            db.insert(table, null, values);
+        }
+    }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
@@ -145,6 +209,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void clearUserData(String userUid) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("expenses", "user_uid=?", new String[]{userUid});
+        db.delete("income", "user_uid=?", new String[]{userUid});
+        db.delete("users", "firebase_uid=?", new String[]{userUid});
+        db.close();
+    }
+
     // ===========================
     // 🔹 EXPENSE METHODS
     // ===========================
@@ -174,7 +246,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public Cursor getExpenses(String userUid) {
-
+        if (userUid == null) return null;
         SQLiteDatabase db = this.getReadableDatabase();
 
         return db.rawQuery(
@@ -234,7 +306,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public Cursor getIncome(String userUid) {
-
+        if (userUid == null) return null;
         SQLiteDatabase db = this.getReadableDatabase();
 
         return db.rawQuery(

@@ -1,211 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F6FA">
-    <LinearLayout
-        android:orientation="vertical"
-        android:padding="16dp"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomNav"
+        android:fillViewport="true">
 
-        <!-- CATEGORY DISTRIBUTION CARD -->
-
-        <androidx.cardview.widget.CardView
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="16dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp"
-            android:background="#FFFFFF">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:padding="16dp"
+            <!-- CATEGORY DISTRIBUTION CARD -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="#FFFFFF">
 
-                <TextView
-                    android:text="Category Distribution"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#111111"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <!-- TOGGLE BUTTON -->
                 <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="16dp"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content">
 
-                    <Button
-                        android:id="@+id/btnIncome"
-                        android:text="Income"
-                        android:background="@android:color/transparent"
-                        android:textAllCaps="false"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"/>
+                    <TextView
+                        android:text="Category Distribution"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#111111"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-                    <Button
-                        android:id="@+id/btnExpense"
-                        android:text="Expense"
-                        android:background="@android:color/transparent"
-                        android:textAllCaps="false"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"/>
+                    <!-- TOGGLE BUTTON -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp">
+
+                        <Button
+                            android:id="@+id/btnIncome"
+                            android:text="Income"
+                            android:background="@android:color/transparent"
+                            android:textAllCaps="false"
+                            android:textColor="#888888"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"/>
+
+                        <Button
+                            android:id="@+id/btnExpense"
+                            android:text="Expense"
+                            android:background="@android:color/transparent"
+                            android:textAllCaps="false"
+                            android:textColor="#888888"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"/>
+
+                    </LinearLayout>
+
+                    <!-- UNDERLINE INDICATOR -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:orientation="horizontal">
+
+                        <View
+                            android:id="@+id/incomeIndicator"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:background="@color/income_green"/>
+
+                        <View
+                            android:id="@+id/expenseIndicator"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="match_parent"
+                            android:background="@color/expense_red"
+                            android:visibility="invisible"/>
+
+                    </LinearLayout>
+
+                    <!-- PIE CHART -->
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="280dp"
+                        android:layout_marginTop="10dp"/>
 
                 </LinearLayout>
 
+            </androidx.cardview.widget.CardView>
 
 
-                <!-- UNDERLINE INDICATOR -->
+            <!-- SPENDING TREND CARD -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="#FFFFFF">
+
                 <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="16dp"
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:orientation="horizontal">
+                    android:layout_height="wrap_content">
 
-                    <View
-                        android:id="@+id/incomeIndicator"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:background="#2E7D32"/>
+                    <TextView
+                        android:text="Spending Trend"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#111111"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-                    <View
-                        android:id="@+id/expenseIndicator"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent"
-                        android:background="#2E7D32"
-                        android:visibility="invisible"/>
+                    <com.github.mikephil.charting.charts.BarChart
+                        android:id="@+id/barChart"
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:layout_marginTop="10dp"/>
 
                 </LinearLayout>
 
-                <!-- PIE CHART -->
-
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChart"
-                    android:layout_width="match_parent"
-                    android:layout_height="280dp"
-                    android:layout_marginTop="10dp"/>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
-        <!-- SPENDING TREND CARD -->
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp"
-            android:background="#FFFFFF">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:padding="16dp"
+            <!-- PREDICTION CARD -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="#FFFFFF">
 
-                <TextView
-                    android:text="Spending Trend"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#111111"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/barChart"
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="16dp"
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_height="wrap_content">
 
-            </LinearLayout>
+                    <TextView
+                        android:text="Predicted Next Month Expense"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#111111"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-        </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/txtPrediction"
+                        android:text="Rs 0"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginTop="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
 
-        <!-- PREDICTION CARD -->
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp"
-            android:background="#FFFFFF">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:padding="16dp"
+            <!-- SMART INSIGHTS CARD -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="#FFFFFF"
+                android:layout_marginBottom="20dp">
 
-                <TextView
-                    android:text="Predicted Next Month Expense"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/txtPrediction"
-                    android:text="Rs 0"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="#2E7D32"
-                    android:layout_marginTop="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-
-        <!-- SMART INSIGHTS CARD -->
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp"
-            android:background="#FFFFFF">
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:text="Smart Insights"
-                    android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/txtInsights"
-                    android:text="Insights will appear here"
-                    android:textSize="16sp"
-                    android:layout_marginTop="8dp"
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="16dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content">
 
-            </LinearLayout>
+                    <TextView
+                        android:text="Smart Insights"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#111111"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
 
-        </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:id="@+id/txtInsights"
+                        android:text="Insights will appear here"
+                        android:textSize="16sp"
+                        android:textColor="#333333"
+                        android:layout_marginTop="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
 
-    </LinearLayout>
+                </LinearLayout>
 
-</ScrollView>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        layout="@layout/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>

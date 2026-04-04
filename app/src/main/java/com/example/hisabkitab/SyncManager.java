@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -66,10 +69,12 @@ public class SyncManager {
                     .collection("transactions")
                     .add(map)
                     .addOnSuccessListener(documentReference -> {
-
                         db.markExpenseAsSynced(id,
                                 documentReference.getId());
-
+                        Log.d("SyncManager", "Expense synced: " + title);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("SyncManager", "Sync failed for expense: " + title, e);
                     });
         }
 
@@ -120,10 +125,12 @@ public class SyncManager {
                     .collection("transactions")
                     .add(map)
                     .addOnSuccessListener(documentReference -> {
-
                         db.markIncomeAsSynced(id,
                                 documentReference.getId());
-
+                        Log.d("SyncManager", "Income synced: " + title);
+                    })
+                    .addOnFailureListener(e -> {
+                        Log.e("SyncManager", "Sync failed for income: " + title, e);
                     });
         }
 

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2E7D32">
+    android:background="@color/income_green">
 
     <!-- Header -->
     <TextView
@@ -171,11 +171,11 @@
                 <Button
                     android:id="@+id/btnAddIncome"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="wrap_content"
                     android:text="Add Income"
                     android:textColor="#FFFFFF"
                     android:layout_marginTop="20dp"
-                    android:backgroundTint="#2E7D32"/>
+                    android:backgroundTint="@color/income_green"/>
 
             </LinearLayout>
 

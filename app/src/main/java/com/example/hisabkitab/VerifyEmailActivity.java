@@ -1,6 +1,6 @@
 package com.example.hisabkitab;
 
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class VerifyEmailActivity extends Activity {
+public class VerifyEmailActivity extends AppCompatActivity {
 
     TextView txtMessage;
     Button btnRefresh;

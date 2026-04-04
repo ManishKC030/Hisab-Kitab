@@ -1,11 +1,14 @@
 package com.example.hisabkitab;
-
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,10 +17,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class AccountActivity extends Activity {
+public class AccountActivity extends AppCompatActivity {
 
     TextView txtName, txtEmail;
     Button btnLogout, btnDeleteAccount;
+    LinearLayout navBtnHome, navBtnAnalytics, navBtnStatement, navBtnAccount;
 
     FirebaseAuth mAuth;
     FirebaseFirestore firestore;
@@ -33,6 +37,24 @@ public class AccountActivity extends Activity {
         txtEmail = findViewById(R.id.txtEmail);
         btnLogout = findViewById(R.id.btnLogout);
         btnDeleteAccount = findViewById(R.id.btnDeleteAccount);
+
+        // Navigation
+        navBtnHome = findViewById(R.id.navBtnHome);
+        navBtnAnalytics = findViewById(R.id.navBtnAnalytics);
+        navBtnStatement = findViewById(R.id.navBtnStatement);
+        navBtnAccount = findViewById(R.id.navBtnAccount);
+
+        // Set active tab color
+        int activeColor = androidx.core.content.ContextCompat.getColor(this, R.color.colorPrimary);
+        ((ImageView)findViewById(R.id.navIconAccount)).setColorFilter(activeColor);
+        ((TextView)findViewById(R.id.navTextAccount)).setTextColor(activeColor);
+
+        navBtnHome.setOnClickListener(v ->
+                startActivity(new Intent(this, DashboardActivity.class)));
+        navBtnStatement.setOnClickListener(v ->
+                startActivity(new Intent(this, StatementActivity.class)));
+        navBtnAnalytics.setOnClickListener(v ->
+                startActivity(new Intent(this, AnalyticsActivity.class)));
 
         // Firebase
         mAuth = FirebaseAuth.getInstance();
@@ -65,6 +87,7 @@ public class AccountActivity extends Activity {
     private void logoutUser() {
         // No internet required
         mAuth.signOut();
+        new SessionManager(this).clearSession();
         Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(AccountActivity.this, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -101,33 +124,35 @@ public class AccountActivity extends Activity {
                     user.reauthenticate(EmailAuthProvider.getCredential(email, password))
                             .addOnSuccessListener(aVoid -> {
 
-                                // Delete Firestore data
-                                firestore.collection("users")
-                                        .document(user.getUid())
-                                        .delete()
-                                        .addOnSuccessListener(aVoid1 -> {
+                                String uid = user.getUid();
 
-                                            // Delete Firebase user
+                                // 1. Attempt Firestore delete (Fail-safe)
+                                firestore.collection("users").document(uid).delete()
+                                        .addOnCompleteListener(task -> {
+                                            // Even if Firestore fails (e.g. permission denied or doc gone),
+                                            // we proceed to delete the Auth account and local data.
+                                            if (!task.isSuccessful()) {
+                                                android.util.Log.e("AccountActivity", "Firestore delete failed: " + task.getException());
+                                            }
+
+                                            // 2. Delete the Firebase Auth account
                                             user.delete()
                                                     .addOnSuccessListener(aVoid2 -> {
-
-                                                        // Delete local SQLite user
-                                                        dbHandler.deleteUser(email);
+                                                        // 3. Clear SQLite data
+                                                        dbHandler.clearUserData(uid);
+                                                        new SessionManager(this).clearSession();
 
                                                         Toast.makeText(this, "Account deleted successfully!", Toast.LENGTH_LONG).show();
 
-                                                        // Redirect to Login
                                                         Intent intent = new Intent(AccountActivity.this, LoginActivity.class);
                                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                                         startActivity(intent);
-
                                                     })
-                                                    .addOnFailureListener(e ->
-                                                            Toast.makeText(this, "Failed to delete user: " + e.getMessage(), Toast.LENGTH_LONG).show());
-
-                                        })
-                                        .addOnFailureListener(e ->
-                                                Toast.makeText(this, "Failed to delete Firestore data: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                                                    .addOnFailureListener(e -> {
+                                                        Toast.makeText(this, "Auth deletion failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                                        android.util.Log.e("AccountActivity", "Auth Error: ", e);
+                                                    });
+                                        });
 
                             })
                             .addOnFailureListener(e ->
