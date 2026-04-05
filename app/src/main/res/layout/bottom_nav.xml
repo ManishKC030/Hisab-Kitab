@@ -25,7 +25,7 @@
             android:id="@+id/navIconHome"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_view"
+            android:src="@drawable/home"
             android:tint="@color/textSecondary"/>
 
         <TextView
@@ -53,7 +53,7 @@
             android:id="@+id/navIconStatement"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_agenda"
+            android:src="@drawable/statement"
             android:tint="@color/textSecondary"/>
 
         <TextView
@@ -81,7 +81,7 @@
             android:id="@+id/navIconAnalytics"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_sort_by_size"
+            android:src="@drawable/analysis"
             android:tint="@color/textSecondary"/>
 
         <TextView
@@ -109,7 +109,7 @@
             android:id="@+id/navIconAccount"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@android:drawable/ic_menu_myplaces"
+            android:src="@drawable/account"
             android:tint="@color/textSecondary"/>
 
         <TextView
